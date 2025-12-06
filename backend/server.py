@@ -828,13 +828,28 @@ async def get_analytics_by_category(
         else:
             query["date"] = {"$lte": datetime.fromisoformat(end_date)}
     
+    # Use projection to only fetch required fields
+    projection = {"category_id": 1, "currency": 1, "amount": 1, "_id": 0}
+    
+    # First pass: collect unique category IDs
+    expenses_list = await db.expenses.find(query, projection).to_list(length=10000)
+    
+    if not expenses_list:
+        return []
+    
+    # Batch fetch all categories
+    category_ids = list(set(exp["category_id"] for exp in expenses_list))
+    categories_dict = {}
+    async for cat in db.categories.find({"id": {"$in": category_ids}}, {"id": 1, "name": 1, "icon": 1, "color": 1}):
+        categories_dict[cat["id"]] = cat
+    
     category_expenses = {}
-    async for exp in db.expenses.find(query):
+    for exp in expenses_list:
         cat_id = exp["category_id"]
         currency = exp["currency"]
         
         if cat_id not in category_expenses:
-            category = await get_category_info(cat_id, family_id)
+            category = categories_dict.get(cat_id, {"name": "Unknown", "icon": "help-circle", "color": "#999999"})
             category_expenses[cat_id] = {
                 "category_id": cat_id,
                 "category_name": category.get("name", "Unknown"),
@@ -871,13 +886,28 @@ async def get_analytics_by_member(
         else:
             query["date"] = {"$lte": datetime.fromisoformat(end_date)}
     
+    # Use projection to only fetch required fields
+    projection = {"paid_by": 1, "currency": 1, "amount": 1, "_id": 0}
+    
+    # First pass: collect unique user IDs
+    expenses_list = await db.expenses.find(query, projection).to_list(length=10000)
+    
+    if not expenses_list:
+        return []
+    
+    # Batch fetch all users
+    user_ids = list(set(exp["paid_by"] for exp in expenses_list))
+    users_dict = {}
+    async for user in db.users.find({"id": {"$in": user_ids}}, {"id": 1, "name": 1, "avatar_color": 1}):
+        users_dict[user["id"]] = {"name": user.get("name", "Unknown"), "color": user.get("avatar_color", "#999999")}
+    
     member_expenses = {}
-    async for exp in db.expenses.find(query):
+    for exp in expenses_list:
         user_id = exp["paid_by"]
         currency = exp["currency"]
         
         if user_id not in member_expenses:
-            user_info = await get_user_info(user_id)
+            user_info = users_dict.get(user_id, {"name": "Unknown", "color": "#999999"})
             member_expenses[user_id] = {
                 "user_id": user_id,
                 "user_name": user_info["name"],
