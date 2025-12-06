@@ -604,12 +604,31 @@ async def get_expenses(
     if paid_by:
         query["paid_by"] = paid_by
     
+    # Fetch expenses first
     expenses_cursor = db.expenses.find(query).sort("date", -1).limit(limit)
+    expenses_list = await expenses_cursor.to_list(length=limit)
+    
+    if not expenses_list:
+        return []
+    
+    # Batch fetch categories and users to avoid N+1 queries
+    category_ids = list(set(exp["category_id"] for exp in expenses_list))
+    user_ids = list(set(exp["paid_by"] for exp in expenses_list))
+    
+    # Fetch all categories in one query
+    categories_dict = {}
+    async for cat in db.categories.find({"id": {"$in": category_ids}}, {"id": 1, "name": 1, "icon": 1, "color": 1}):
+        categories_dict[cat["id"]] = cat
+    
+    # Fetch all users in one query
+    users_dict = {}
+    async for user in db.users.find({"id": {"$in": user_ids}}, {"id": 1, "name": 1, "avatar_color": 1}):
+        users_dict[user["id"]] = {"name": user.get("name", "Unknown"), "color": user.get("avatar_color", "#999999")}
     
     expenses = []
-    async for exp in expenses_cursor:
-        category = await get_category_info(exp["category_id"], current_user["family_id"])
-        user_info = await get_user_info(exp["paid_by"])
+    for exp in expenses_list:
+        category = categories_dict.get(exp["category_id"], {"name": "Unknown", "icon": "help-circle", "color": "#999999"})
+        user_info = users_dict.get(exp["paid_by"], {"name": "Unknown", "color": "#999999"})
         
         expenses.append(ExpenseResponse(
             id=exp["id"],
