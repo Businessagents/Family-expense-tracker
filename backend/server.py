@@ -761,9 +761,12 @@ async def get_analytics_summary(current_user: dict = Depends(get_current_user)):
         last_month_start = datetime(now.year, now.month - 1, 1)
         last_month_end = datetime(now.year, now.month, 1)
     
+    # Use projections to only fetch required fields
+    projection = {"currency": 1, "amount": 1, "_id": 0}
+    
     # Today's expenses by currency
     today_expenses = {}
-    async for exp in db.expenses.find({"family_id": family_id, "date": {"$gte": today_start}}):
+    async for exp in db.expenses.find({"family_id": family_id, "date": {"$gte": today_start}}, projection):
         currency = exp["currency"]
         if currency not in today_expenses:
             today_expenses[currency] = 0
@@ -771,7 +774,7 @@ async def get_analytics_summary(current_user: dict = Depends(get_current_user)):
     
     # This month's expenses by currency
     month_expenses = {}
-    async for exp in db.expenses.find({"family_id": family_id, "date": {"$gte": month_start}}):
+    async for exp in db.expenses.find({"family_id": family_id, "date": {"$gte": month_start}}, projection):
         currency = exp["currency"]
         if currency not in month_expenses:
             month_expenses[currency] = 0
@@ -779,7 +782,7 @@ async def get_analytics_summary(current_user: dict = Depends(get_current_user)):
     
     # Last month's expenses by currency
     last_month_expenses = {}
-    async for exp in db.expenses.find({"family_id": family_id, "date": {"$gte": last_month_start, "$lt": last_month_end}}):
+    async for exp in db.expenses.find({"family_id": family_id, "date": {"$gte": last_month_start, "$lt": last_month_end}}, projection):
         currency = exp["currency"]
         if currency not in last_month_expenses:
             last_month_expenses[currency] = 0
@@ -787,7 +790,7 @@ async def get_analytics_summary(current_user: dict = Depends(get_current_user)):
     
     # Total expenses by currency
     total_expenses = {}
-    async for exp in db.expenses.find({"family_id": family_id}):
+    async for exp in db.expenses.find({"family_id": family_id}, projection):
         currency = exp["currency"]
         if currency not in total_expenses:
             total_expenses[currency] = 0
