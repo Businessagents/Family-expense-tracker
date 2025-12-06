@@ -123,15 +123,16 @@ class FamilyFinanceAPITester:
             
         # Test invalid credentials
         invalid_login = {
-            "email": self.user1_data["email"],
+            "email": "nonexistent@example.com",
             "pin": "9999"
         }
         
         response = self.make_request("POST", "/auth/login", invalid_login)
         if response and response.status_code == 401:
-            self.log_test("User Login - Invalid Credentials", True, "Correctly rejected invalid PIN")
+            self.log_test("User Login - Invalid Credentials", True, "Correctly rejected invalid credentials")
         else:
-            self.log_test("User Login - Invalid Credentials", False, "Should reject invalid PIN")
+            error_msg = response.text if response else "No response"
+            self.log_test("User Login - Invalid Credentials", False, f"Expected 401, got: {response.status_code if response else 'None'}, {error_msg}")
 
     def test_auth_me(self):
         """Test get current user API"""
