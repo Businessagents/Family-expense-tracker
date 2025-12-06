@@ -92,10 +92,11 @@ class FamilyFinanceAPITester:
         }
         
         response = self.make_request("POST", "/auth/register", invalid_user)
-        if response and response.status_code == 400:
+        if response and response.status_code == 400 and "PIN must be 4-6 digits" in response.text:
             self.log_test("User Registration - Invalid PIN", True, "Correctly rejected short PIN")
         else:
-            self.log_test("User Registration - Invalid PIN", False, "Should reject short PIN")
+            error_msg = response.text if response else "No response"
+            self.log_test("User Registration - Invalid PIN", False, f"Expected PIN validation error, got: {error_msg}")
 
     def test_user_login(self):
         """Test user login API"""
