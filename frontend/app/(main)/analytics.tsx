@@ -13,8 +13,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from 'expo-router';
 import { BarChart, PieChart } from 'react-native-gifted-charts';
-import { useAuth } from '../../src/contexts/AuthContext';
-import { api } from '../../src/services/api';
+import { useAuth } from '@/src/contexts/AuthContext';
+import { api } from '@/src/services/api';
 
 const CURRENCY_SYMBOLS: Record<string, string> = {
   INR: '₹',
