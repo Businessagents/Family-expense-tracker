@@ -934,6 +934,9 @@ async def get_analytics_trends(
     family_id = current_user["family_id"]
     now = datetime.utcnow()
     
+    # Use projection to only fetch required fields
+    projection = {"currency": 1, "amount": 1, "date": 1, "_id": 0}
+    
     trends = []
     for i in range(months - 1, -1, -1):
         # Calculate month start and end
@@ -952,7 +955,7 @@ async def get_analytics_trends(
         month_name = month_start.strftime("%b %Y")
         
         month_expenses = {}
-        async for exp in db.expenses.find({"family_id": family_id, "date": {"$gte": month_start, "$lt": month_end}}):
+        async for exp in db.expenses.find({"family_id": family_id, "date": {"$gte": month_start, "$lt": month_end}}, projection):
             currency = exp["currency"]
             if currency not in month_expenses:
                 month_expenses[currency] = 0
@@ -978,13 +981,16 @@ async def get_analytics_daily(
     family_id = current_user["family_id"]
     now = datetime.utcnow()
     
+    # Use projection to only fetch required fields
+    projection = {"currency": 1, "amount": 1, "date": 1, "_id": 0}
+    
     daily_data = []
     for i in range(days - 1, -1, -1):
         day_start = datetime(now.year, now.month, now.day) - timedelta(days=i)
         day_end = day_start + timedelta(days=1)
         
         day_expenses = {}
-        async for exp in db.expenses.find({"family_id": family_id, "date": {"$gte": day_start, "$lt": day_end}}):
+        async for exp in db.expenses.find({"family_id": family_id, "date": {"$gte": day_start, "$lt": day_end}}, projection):
             currency = exp["currency"]
             if currency not in day_expenses:
                 day_expenses[currency] = 0
