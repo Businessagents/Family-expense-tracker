@@ -268,14 +268,14 @@ class FamilyFinanceAPITester:
             return False
         
         # Create second user first
-        timestamp = str(int(datetime.now().timestamp()))
+        timestamp = str(int(datetime.now().timestamp()) + 1)  # Different timestamp
         user2_data = {
             "name": f"Test User 2 {timestamp}",
             "email": f"testuser2{timestamp}@example.com",
             "pin": "5678"
         }
         
-        response = self.make_request("POST", "/auth/register", user2_data)
+        response = self.make_request("POST", "/auth/register", user2_data, headers={})
         if not response or response.status_code != 200:
             self.log_test(test_name, False, "Failed to create second user")
             return False
