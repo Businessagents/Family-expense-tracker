@@ -179,6 +179,20 @@ export default function Export() {
           </TouchableOpacity>
         </View>
 
+        {/* Date Range Option */}
+        <TouchableOpacity
+          style={[styles.dateRangeOption, exportType === 'range' && styles.dateRangeOptionActive]}
+          onPress={() => setExportType('range')}
+        >
+          <Ionicons name="calendar-outline" size={24} color={exportType === 'range' ? '#10B981' : '#64748B'} />
+          <View style={styles.dateRangeTextContainer}>
+            <Text style={[styles.exportTypeText, exportType === 'range' && styles.exportTypeTextActive]}>
+              Date Range
+            </Text>
+            <Text style={styles.exportTypeDesc}>Export specific date range</Text>
+          </View>
+        </TouchableOpacity>
+
         {/* Month/Year Selection */}
         {exportType === 'monthly' && (
           <View style={styles.dateSelection}>
