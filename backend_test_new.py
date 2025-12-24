@@ -547,7 +547,8 @@ class FamilyFinanceAPITester:
             return False
         
         if response.status_code == 200:
-            if response.headers.get("content-type") == "text/csv":
+            content_type = response.headers.get("content-type", "")
+            if "text/csv" in content_type:
                 content = response.text
                 if "Date,Group,Category,Amount,Currency,Description,Paid By" in content:
                     self.log_test(test_name, True, f"CSV export successful ({len(content)} bytes)")
@@ -556,7 +557,7 @@ class FamilyFinanceAPITester:
                     self.log_test(test_name, False, "CSV header not found")
                     return False
             else:
-                self.log_test(test_name, False, f"Wrong content type: {response.headers.get('content-type')}")
+                self.log_test(test_name, False, f"Wrong content type: {content_type}")
                 return False
         else:
             self.log_test(test_name, False, f"HTTP {response.status_code}: {response.text}")
