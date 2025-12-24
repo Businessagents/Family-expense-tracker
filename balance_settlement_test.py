@@ -476,9 +476,8 @@ class FamilyFinanceAPITester:
         headers = self.headers.copy()
         headers["Authorization"] = f"Bearer {self.user1_token}"
         
-        # Test changing to contribution mode - mode should be in request body
-        mode_data = {"mode": "contribution"}
-        response = self.make_request("PUT", f"/groups/{self.group_id}/mode", mode_data, headers)
+        # Test changing to contribution mode
+        response = self.make_request("PUT", f"/groups/{self.group_id}/mode?mode=contribution", None, headers)
         if response and response.status_code == 200:
             self.log_test("Change to Contribution Mode", True, "Successfully changed group mode to contribution")
         else:
@@ -500,8 +499,7 @@ class FamilyFinanceAPITester:
             return False
         
         # Test changing back to split mode
-        mode_data = {"mode": "split"}
-        response = self.make_request("PUT", f"/groups/{self.group_id}/mode", mode_data, headers)
+        response = self.make_request("PUT", f"/groups/{self.group_id}/mode?mode=split", None, headers)
         if response and response.status_code == 200:
             self.log_test("Change Back to Split Mode", True, "Successfully changed group mode back to split")
             return True
