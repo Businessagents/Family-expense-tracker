@@ -299,6 +299,138 @@ export default function Export() {
           </Text>
         </View>
       </ScrollView>
+
+      {/* Start Date Picker Modal */}
+      <Modal visible={showStartDateModal} animationType="slide" transparent>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Select Start Date</Text>
+              <TouchableOpacity onPress={() => setShowStartDateModal(false)}>
+                <Ionicons name="close" size={24} color="#F8FAFC" />
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.label}>Day</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.monthSelector}>
+              {days.map((day) => (
+                <TouchableOpacity
+                  key={day}
+                  style={[styles.monthChip, startDate.day === day && styles.monthChipActive]}
+                  onPress={() => setStartDate({ ...startDate, day })}
+                >
+                  <Text style={[styles.monthChipText, startDate.day === day && styles.monthChipTextActive]}>
+                    {day}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+
+            <Text style={styles.label}>Month</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.monthSelector}>
+              {months.map((month, index) => (
+                <TouchableOpacity
+                  key={month}
+                  style={[styles.monthChip, startDate.month === index + 1 && styles.monthChipActive]}
+                  onPress={() => setStartDate({ ...startDate, month: index + 1 })}
+                >
+                  <Text style={[styles.monthChipText, startDate.month === index + 1 && styles.monthChipTextActive]}>
+                    {month.substring(0, 3)}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+
+            <Text style={styles.label}>Year</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.monthSelector}>
+              {years.map((year) => (
+                <TouchableOpacity
+                  key={year}
+                  style={[styles.monthChip, startDate.year === year && styles.monthChipActive]}
+                  onPress={() => setStartDate({ ...startDate, year })}
+                >
+                  <Text style={[styles.monthChipText, startDate.year === year && styles.monthChipTextActive]}>
+                    {year}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+
+            <TouchableOpacity
+              style={styles.modalDoneButton}
+              onPress={() => setShowStartDateModal(false)}
+            >
+              <Text style={styles.modalDoneButtonText}>Done</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* End Date Picker Modal */}
+      <Modal visible={showEndDateModal} animationType="slide" transparent>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Select End Date</Text>
+              <TouchableOpacity onPress={() => setShowEndDateModal(false)}>
+                <Ionicons name="close" size={24} color="#F8FAFC" />
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.label}>Day</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.monthSelector}>
+              {days.map((day) => (
+                <TouchableOpacity
+                  key={day}
+                  style={[styles.monthChip, endDate.day === day && styles.monthChipActive]}
+                  onPress={() => setEndDate({ ...endDate, day })}
+                >
+                  <Text style={[styles.monthChipText, endDate.day === day && styles.monthChipTextActive]}>
+                    {day}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+
+            <Text style={styles.label}>Month</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.monthSelector}>
+              {months.map((month, index) => (
+                <TouchableOpacity
+                  key={month}
+                  style={[styles.monthChip, endDate.month === index + 1 && styles.monthChipActive]}
+                  onPress={() => setEndDate({ ...endDate, month: index + 1 })}
+                >
+                  <Text style={[styles.monthChipText, endDate.month === index + 1 && styles.monthChipTextActive]}>
+                    {month.substring(0, 3)}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+
+            <Text style={styles.label}>Year</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.monthSelector}>
+              {years.map((year) => (
+                <TouchableOpacity
+                  key={year}
+                  style={[styles.monthChip, endDate.year === year && styles.monthChipActive]}
+                  onPress={() => setEndDate({ ...endDate, year })}
+                >
+                  <Text style={[styles.monthChipText, endDate.year === year && styles.monthChipTextActive]}>
+                    {year}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+
+            <TouchableOpacity
+              style={styles.modalDoneButton}
+              onPress={() => setShowEndDateModal(false)}
+            >
+              <Text style={styles.modalDoneButtonText}>Done</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
