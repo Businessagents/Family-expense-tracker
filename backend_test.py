@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 import time
 
 # Backend URL from environment
-BACKEND_URL = "https://work-1-hkfvhpbtdmblhfkr.prod-runtime.all-hands.dev/api"
+BACKEND_URL = "http://localhost:8001/api"
 
 class FamilyFinanceAPITester:
     def __init__(self):
