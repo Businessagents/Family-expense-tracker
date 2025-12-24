@@ -82,6 +82,18 @@ export default function MainLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="groups"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="export"
+        options={{
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }

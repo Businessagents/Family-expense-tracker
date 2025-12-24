@@ -15,6 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/src/contexts/AuthContext';
+import { useGroups } from '@/src/contexts/GroupContext';
 import { api } from '@/src/services/api';
 
 const CURRENCY_SYMBOLS: Record<string, string> = {
@@ -37,17 +38,30 @@ interface Category {
 export default function AddExpense() {
   const router = useRouter();
   const { user } = useAuth();
+  const { groups, selectedGroup, getPersonalGroup } = useGroups();
   const [amount, setAmount] = useState('');
   const [currency, setCurrency] = useState(user?.default_currency || 'INR');
   const [description, setDescription] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isFetchingCategories, setIsFetchingCategories] = useState(true);
 
   useEffect(() => {
+    // Set default group
+    if (selectedGroup) {
+      setSelectedGroupId(selectedGroup.id);
+    } else {
+      const personal = getPersonalGroup();
+      if (personal) {
+        setSelectedGroupId(personal.id);
+      } else if (groups.length > 0) {
+        setSelectedGroupId(groups[0].id);
+      }
+    }
     fetchCategories();
-  }, []);
+  }, [selectedGroup, groups]);
 
   const fetchCategories = async () => {
     try {
@@ -71,12 +85,18 @@ export default function AddExpense() {
       return;
     }
 
+    if (!selectedGroupId) {
+      Alert.alert('Error', 'Please select a group');
+      return;
+    }
+
     setIsLoading(true);
     try {
       await api.createExpense({
         amount: parseFloat(amount),
         currency,
         category_id: selectedCategory.id,
+        group_id: selectedGroupId,
         description: description.trim(),
       });
 
@@ -114,6 +134,8 @@ export default function AddExpense() {
     return iconMap[icon] || 'ellipsis-horizontal';
   };
 
+  const selectedGroupData = groups.find(g => g.id === selectedGroupId);
+
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
@@ -126,6 +148,32 @@ export default function AddExpense() {
         >
           <Text style={styles.title}>Add Expense</Text>
 
+          {/* Group Selector */}
+          <Text style={styles.sectionTitle}>Select Group</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.groupSelector}>
+            {groups.map((group) => (
+              <TouchableOpacity
+                key={group.id}
+                style={[
+                  styles.groupChip,
+                  selectedGroupId === group.id && styles.groupChipActive,
+                  selectedGroupId === group.id && { borderColor: group.color },
+                ]}
+                onPress={() => setSelectedGroupId(group.id)}
+              >
+                <View style={[styles.groupChipDot, { backgroundColor: group.color }]} />
+                <Text
+                  style={[
+                    styles.groupChipText,
+                    selectedGroupId === group.id && styles.groupChipTextActive,
+                  ]}
+                >
+                  {group.name}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+
           {/* Amount Input */}
           <View style={styles.amountContainer}>
             <Text style={styles.currencySymbol}>{CURRENCY_SYMBOLS[currency]}</Text>
@@ -136,7 +184,6 @@ export default function AddExpense() {
               value={amount}
               onChangeText={setAmount}
               keyboardType="decimal-pad"
-              autoFocus
             />
           </View>
 
@@ -252,7 +299,44 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#F8FAFC',
     textAlign: 'center',
-    marginBottom: 24,
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#94A3B8',
+    marginBottom: 12,
+  },
+  groupSelector: {
+    marginBottom: 20,
+  },
+  groupChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 20,
+    backgroundColor: '#1E293B',
+    marginRight: 8,
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  groupChipActive: {
+    backgroundColor: '#10B98120',
+  },
+  groupChipDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: 8,
+  },
+  groupChipText: {
+    color: '#94A3B8',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  groupChipTextActive: {
+    color: '#F8FAFC',
   },
   amountContainer: {
     flexDirection: 'row',
@@ -317,12 +401,6 @@ const styles = StyleSheet.create({
     height: 56,
     color: '#F8FAFC',
     fontSize: 16,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#94A3B8',
-    marginBottom: 16,
   },
   categoriesLoader: {
     marginVertical: 40,

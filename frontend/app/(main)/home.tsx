@@ -7,11 +7,13 @@ import {
   TouchableOpacity,
   RefreshControl,
   ActivityIndicator,
+  Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { useAuth } from '@/src/contexts/AuthContext';
+import { useGroups } from '@/src/contexts/GroupContext';
 import { api } from '@/src/services/api';
 
 const CURRENCY_SYMBOLS: Record<string, string> = {
@@ -39,23 +41,28 @@ interface Expense {
   description: string;
   paid_by_name: string;
   paid_by_color: string;
+  group_id: string;
+  group_name: string;
   date: string;
 }
 
 export default function Home() {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, lockApp } = useAuth();
+  const { groups, selectedGroup, selectGroup, fetchGroups } = useGroups();
   const [summary, setSummary] = useState<Summary | null>(null);
   const [recentExpenses, setRecentExpenses] = useState<Expense[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [selectedCurrency, setSelectedCurrency] = useState(user?.default_currency || 'INR');
+  const [showGroupSelector, setShowGroupSelector] = useState(false);
 
   const fetchData = async () => {
     try {
+      const groupId = selectedGroup?.id;
       const [summaryData, expensesData] = await Promise.all([
-        api.getAnalyticsSummary(),
-        api.getExpenses({ limit: 5 }),
+        api.getAnalyticsSummary(groupId),
+        api.getExpenses({ group_id: groupId, limit: 5 }),
       ]);
       setSummary(summaryData);
       setRecentExpenses(expensesData);
@@ -70,11 +77,12 @@ export default function Home() {
   useFocusEffect(
     useCallback(() => {
       fetchData();
-    }, [])
+    }, [selectedGroup])
   );
 
   const onRefresh = () => {
     setRefreshing(true);
+    fetchGroups();
     fetchData();
   };
 
@@ -135,11 +143,24 @@ export default function Home() {
             <Text style={styles.greeting}>Hello,</Text>
             <Text style={styles.userName}>{user?.name || 'User'}</Text>
           </View>
-          <View style={styles.familyBadge}>
-            <Ionicons name="people" size={16} color="#10B981" />
-            <Text style={styles.familyName}>{user?.family_name || 'Family'}</Text>
-          </View>
+          <TouchableOpacity onPress={lockApp} style={styles.lockButton}>
+            <Ionicons name="lock-closed" size={20} color="#94A3B8" />
+          </TouchableOpacity>
         </View>
+
+        {/* Group Selector */}
+        <TouchableOpacity style={styles.groupSelector} onPress={() => setShowGroupSelector(true)}>
+          <View style={styles.groupSelectorContent}>
+            <View style={[styles.groupDot, { backgroundColor: selectedGroup?.color || '#10B981' }]} />
+            <Text style={styles.groupName}>{selectedGroup?.name || 'Select Group'}</Text>
+            {selectedGroup?.type === 'personal' && (
+              <View style={styles.personalBadge}>
+                <Text style={styles.personalBadgeText}>Personal</Text>
+              </View>
+            )}
+          </View>
+          <Ionicons name="chevron-down" size={20} color="#94A3B8" />
+        </TouchableOpacity>
 
         {/* Currency Selector */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.currencySelector}>
@@ -213,10 +234,7 @@ export default function Home() {
               <TouchableOpacity
                 key={expense.id}
                 style={styles.expenseCard}
-                onPress={() => router.push({
-                  pathname: '/(main)/expenses',
-                  params: { expenseId: expense.id }
-                })}
+                onPress={() => router.push('/(main)/expenses')}
               >
                 <View style={[styles.expenseIcon, { backgroundColor: expense.category_color + '20' }]}>
                   <Ionicons name={getIconName(expense.category_icon)} size={20} color={expense.category_color} />
@@ -237,6 +255,63 @@ export default function Home() {
           )}
         </View>
       </ScrollView>
+
+      {/* Group Selector Modal */}
+      <Modal visible={showGroupSelector} animationType="slide" transparent>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Select Group</Text>
+              <TouchableOpacity onPress={() => setShowGroupSelector(false)}>
+                <Ionicons name="close" size={24} color="#F8FAFC" />
+              </TouchableOpacity>
+            </View>
+
+            <TouchableOpacity
+              style={[styles.groupOption, !selectedGroup && styles.groupOptionActive]}
+              onPress={() => {
+                selectGroup(null);
+                setShowGroupSelector(false);
+              }}
+            >
+              <View style={[styles.groupOptionDot, { backgroundColor: '#10B981' }]} />
+              <Text style={styles.groupOptionText}>All Groups</Text>
+              {!selectedGroup && <Ionicons name="checkmark" size={20} color="#10B981" />}
+            </TouchableOpacity>
+
+            {groups.map((group) => (
+              <TouchableOpacity
+                key={group.id}
+                style={[styles.groupOption, selectedGroup?.id === group.id && styles.groupOptionActive]}
+                onPress={() => {
+                  selectGroup(group);
+                  setShowGroupSelector(false);
+                }}
+              >
+                <View style={[styles.groupOptionDot, { backgroundColor: group.color }]} />
+                <View style={styles.groupOptionContent}>
+                  <Text style={styles.groupOptionText}>{group.name}</Text>
+                  {group.type === 'personal' && (
+                    <Text style={styles.groupOptionType}>Personal</Text>
+                  )}
+                </View>
+                {selectedGroup?.id === group.id && <Ionicons name="checkmark" size={20} color="#10B981" />}
+              </TouchableOpacity>
+            ))}
+
+            <TouchableOpacity
+              style={styles.createGroupButton}
+              onPress={() => {
+                setShowGroupSelector(false);
+                router.push('/(main)/groups');
+              }}
+            >
+              <Ionicons name="add-circle" size={20} color="#10B981" />
+              <Text style={styles.createGroupText}>Create or Join Group</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -258,7 +333,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 16,
   },
   greeting: {
     fontSize: 14,
@@ -269,19 +344,44 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#F8FAFC',
   },
-  familyBadge: {
+  lockButton: {
+    padding: 8,
+  },
+  groupSelector: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#10B98120',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
+    justifyContent: 'space-between',
+    backgroundColor: '#1E293B',
+    padding: 12,
+    borderRadius: 12,
+    marginBottom: 16,
   },
-  familyName: {
-    color: '#10B981',
-    fontSize: 14,
+  groupSelectorContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  groupDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    marginRight: 10,
+  },
+  groupName: {
+    fontSize: 16,
     fontWeight: '500',
-    marginLeft: 6,
+    color: '#F8FAFC',
+  },
+  personalBadge: {
+    backgroundColor: '#10B98120',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 8,
+    marginLeft: 8,
+  },
+  personalBadgeText: {
+    color: '#10B981',
+    fontSize: 12,
+    fontWeight: '500',
   },
   currencySelector: {
     marginBottom: 16,
@@ -431,5 +531,74 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#F8FAFC',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: '#1E293B',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 24,
+    maxHeight: '70%',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#F8FAFC',
+  },
+  groupOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 8,
+    backgroundColor: '#0F172A',
+  },
+  groupOptionActive: {
+    backgroundColor: '#10B98120',
+    borderWidth: 1,
+    borderColor: '#10B981',
+  },
+  groupOptionDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    marginRight: 12,
+  },
+  groupOptionContent: {
+    flex: 1,
+  },
+  groupOptionText: {
+    fontSize: 16,
+    color: '#F8FAFC',
+  },
+  groupOptionType: {
+    fontSize: 12,
+    color: '#64748B',
+    marginTop: 2,
+  },
+  createGroupButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
+    marginTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#334155',
+  },
+  createGroupText: {
+    fontSize: 16,
+    color: '#10B981',
+    fontWeight: '500',
+    marginLeft: 8,
   },
 });
