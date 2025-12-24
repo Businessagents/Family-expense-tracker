@@ -246,6 +246,35 @@ export default function Export() {
           </View>
         )}
 
+        {/* Date Range Selection */}
+        {exportType === 'range' && (
+          <View style={styles.dateSelection}>
+            <Text style={styles.sectionTitle}>Select Date Range</Text>
+            
+            <View style={styles.dateRangeRow}>
+              <TouchableOpacity 
+                style={styles.datePickerButton}
+                onPress={() => setShowStartDateModal(true)}
+              >
+                <Text style={styles.datePickerLabel}>Start Date</Text>
+                <Text style={styles.datePickerValue}>{formatDisplayDate(startDate)}</Text>
+                <Ionicons name="calendar" size={20} color="#10B981" />
+              </TouchableOpacity>
+
+              <Ionicons name="arrow-forward" size={20} color="#64748B" />
+
+              <TouchableOpacity 
+                style={styles.datePickerButton}
+                onPress={() => setShowEndDateModal(true)}
+              >
+                <Text style={styles.datePickerLabel}>End Date</Text>
+                <Text style={styles.datePickerValue}>{formatDisplayDate(endDate)}</Text>
+                <Ionicons name="calendar" size={20} color="#10B981" />
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+
         {/* Export Button */}
         <TouchableOpacity
           style={[styles.exportButton, isLoading && styles.exportButtonDisabled]}
