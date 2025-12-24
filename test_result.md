@@ -195,6 +195,21 @@ backend:
         agent: "testing"
         comment: "✅ TESTED: All analytics endpoints working. Summary analytics with multi-currency support. Category-wise and member-wise analytics working. Trends (monthly) and daily analytics working with configurable time periods."
 
+  - task: "Balance and Settlement APIs"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Balance and settlement features implemented with split/contribution modes"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: All balance and settlement features working correctly. Group creation with split/contribution modes working. Group balance calculations accurate (User 2 owes User 1 ₹50 after ₹100 expense). Settlement creation and retrieval working. Balance updates after settlements working. Group mode toggle working (fixed missing mode field in group details endpoint). Contribution mode correctly shows contributions without debt tracking. Overall balance summary working across all groups."
+
 frontend:
   - task: "Login Screen"
     implemented: true
