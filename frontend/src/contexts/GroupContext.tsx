@@ -70,8 +70,8 @@ export function GroupProvider({ children }: { children: ReactNode }) {
     setSelectedGroup(group);
   };
 
-  const createGroup = async (name: string, type: string = 'shared'): Promise<Group> => {
-    const newGroup = await api.createGroup(name, type);
+  const createGroup = async (name: string, mode: 'split' | 'contribution' = 'split'): Promise<Group> => {
+    const newGroup = await api.createGroup(name, 'shared', mode);
     await fetchGroups();
     return newGroup;
   };
