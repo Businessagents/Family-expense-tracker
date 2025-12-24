@@ -93,10 +93,10 @@ class ApiService {
     return this.request('/groups');
   }
 
-  async createGroup(name: string, type: string = 'shared') {
+  async createGroup(name: string, type: string = 'shared', mode: 'split' | 'contribution' = 'split') {
     return this.request('/groups', {
       method: 'POST',
-      body: JSON.stringify({ name, type }),
+      body: JSON.stringify({ name, type, mode }),
     });
   }
 
