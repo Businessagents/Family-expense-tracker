@@ -8,6 +8,7 @@ import {
   Alert,
   ActivityIndicator,
   Platform,
+  Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -24,6 +25,18 @@ export default function Export() {
   const [exportType, setExportType] = useState<'all' | 'monthly' | 'range'>('all');
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [startDate, setStartDate] = useState<{ day: number; month: number; year: number }>({
+    day: 1,
+    month: new Date().getMonth() + 1,
+    year: new Date().getFullYear(),
+  });
+  const [endDate, setEndDate] = useState<{ day: number; month: number; year: number }>({
+    day: new Date().getDate(),
+    month: new Date().getMonth() + 1,
+    year: new Date().getFullYear(),
+  });
+  const [showStartDateModal, setShowStartDateModal] = useState(false);
+  const [showEndDateModal, setShowEndDateModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const months = [
