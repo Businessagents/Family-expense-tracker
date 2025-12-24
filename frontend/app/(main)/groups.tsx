@@ -513,4 +513,34 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
   },
+  modeContainer: {
+    gap: 12,
+    marginBottom: 24,
+  },
+  modeOption: {
+    backgroundColor: '#1E293B',
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  modeOptionActive: {
+    borderColor: '#10B981',
+    backgroundColor: '#10B98115',
+  },
+  modeTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#94A3B8',
+    marginTop: 8,
+  },
+  modeTitleActive: {
+    color: '#10B981',
+  },
+  modeDesc: {
+    fontSize: 13,
+    color: '#64748B',
+    marginTop: 4,
+    lineHeight: 18,
+  },
 });
