@@ -45,6 +45,15 @@ export default function Export() {
   ];
 
   const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i);
+  const days = Array.from({ length: 31 }, (_, i) => i + 1);
+
+  const formatDateString = (date: { day: number; month: number; year: number }) => {
+    return `${date.year}-${String(date.month).padStart(2, '0')}-${String(date.day).padStart(2, '0')}`;
+  };
+
+  const formatDisplayDate = (date: { day: number; month: number; year: number }) => {
+    return `${date.day} ${months[date.month - 1].substring(0, 3)} ${date.year}`;
+  };
 
   const handleExport = async () => {
     setIsLoading(true);
@@ -60,6 +69,9 @@ export default function Export() {
       if (exportType === 'monthly') {
         exportData.month = selectedMonth;
         exportData.year = selectedYear;
+      } else if (exportType === 'range') {
+        exportData.start_date = formatDateString(startDate);
+        exportData.end_date = formatDateString(endDate);
       }
 
       const response = await api.exportExpenses(exportData);
