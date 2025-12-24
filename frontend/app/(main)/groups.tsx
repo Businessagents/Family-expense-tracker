@@ -20,6 +20,7 @@ export default function Groups() {
   const { groups, createGroup, joinGroup, leaveGroup, deleteGroup, fetchGroups } = useGroups();
   const [mode, setMode] = useState<'list' | 'create' | 'join'>('list');
   const [groupName, setGroupName] = useState('');
+  const [groupMode, setGroupMode] = useState<'split' | 'contribution'>('split');
   const [inviteCode, setInviteCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -31,8 +32,9 @@ export default function Groups() {
 
     setIsLoading(true);
     try {
-      await createGroup(groupName.trim());
+      await createGroup(groupName.trim(), groupMode);
       setGroupName('');
+      setGroupMode('split');
       setMode('list');
       Alert.alert('Success', 'Group created successfully!');
     } catch (error: any) {
