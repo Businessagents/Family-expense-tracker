@@ -279,6 +279,39 @@ class ApiService {
     });
   }
 
+  // Balances & Settlements
+  async getGroupBalances(groupId: string) {
+    return this.request(`/groups/${groupId}/balances`);
+  }
+
+  async getBalancesSummary() {
+    return this.request('/balances/summary');
+  }
+
+  async createSettlement(data: {
+    group_id: string;
+    paid_to: string;
+    amount: number;
+    currency: string;
+    note?: string;
+  }) {
+    return this.request('/settlements', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async getSettlements(groupId?: string) {
+    const query = groupId ? `?group_id=${groupId}` : '';
+    return this.request(`/settlements${query}`);
+  }
+
+  async updateGroupMode(groupId: string, mode: 'split' | 'contribution') {
+    return this.request(`/groups/${groupId}/mode?mode=${mode}`, {
+      method: 'PUT',
+    });
+  }
+
   // Utilities
   async getCurrencies() {
     return this.request('/currencies');
