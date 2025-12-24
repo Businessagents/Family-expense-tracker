@@ -716,6 +716,401 @@ async def delete_group(group_id: str, current_user: dict = Depends(get_current_u
     
     return {"message": "Group deleted successfully"}
 
+# ==================== BALANCE & SETTLEMENT ROUTES ====================
+
+@api_router.get("/groups/{group_id}/balances")
+async def get_group_balances(group_id: str, current_user: dict = Depends(get_current_user)):
+    """Get balance summary for a group showing contributions and debts"""
+    group = await db.groups.find_one({"id": group_id})
+    if not group:
+        raise HTTPException(status_code=404, detail="Group not found")
+    
+    if current_user["id"] not in group.get("members", []):
+        raise HTTPException(status_code=403, detail="Not a member of this group")
+    
+    mode = group.get("mode", "split")
+    
+    # Get all expenses for this group
+    expenses = await db.expenses.find({"group_id": group_id}).to_list(length=10000)
+    
+    # Get all settlements for this group
+    settlements = await db.settlements.find({"group_id": group_id}).to_list(length=10000)
+    
+    # Get member details
+    members = {}
+    for member_id in group.get("members", []):
+        user = await db.users.find_one({"id": member_id})
+        if user:
+            members[member_id] = {
+                "id": member_id,
+                "name": user["name"],
+                "avatar_color": user["avatar_color"]
+            }
+    
+    # Calculate balances per currency
+    member_balances = {}
+    for member_id in members:
+        member_balances[member_id] = {
+            "total_paid": {},     # What they actually paid
+            "total_share": {},    # What they should have paid (equal split)
+            "net_balance": {}     # Difference (positive = owed to them)
+        }
+    
+    num_members = len(members)
+    
+    # Process expenses
+    for expense in expenses:
+        currency = expense["currency"]
+        amount = expense["amount"]
+        paid_by = expense["paid_by"]
+        
+        if paid_by not in member_balances:
+            continue
+        
+        # Add to payer's total paid
+        if currency not in member_balances[paid_by]["total_paid"]:
+            member_balances[paid_by]["total_paid"][currency] = 0
+        member_balances[paid_by]["total_paid"][currency] += amount
+        
+        # Calculate each member's share (equal split)
+        share_per_person = amount / num_members
+        for member_id in members:
+            if currency not in member_balances[member_id]["total_share"]:
+                member_balances[member_id]["total_share"][currency] = 0
+            member_balances[member_id]["total_share"][currency] += share_per_person
+    
+    # Process settlements
+    for settlement in settlements:
+        currency = settlement["currency"]
+        amount = settlement["amount"]
+        paid_by = settlement["paid_by"]
+        paid_to = settlement["paid_to"]
+        
+        # Settlement reduces what paid_by owes and what paid_to is owed
+        if paid_by in member_balances:
+            if currency not in member_balances[paid_by]["total_paid"]:
+                member_balances[paid_by]["total_paid"][currency] = 0
+            member_balances[paid_by]["total_paid"][currency] += amount
+        
+        if paid_to in member_balances:
+            if currency not in member_balances[paid_to]["total_share"]:
+                member_balances[paid_to]["total_share"][currency] = 0
+            member_balances[paid_to]["total_share"][currency] += amount
+    
+    # Calculate net balance for each member
+    for member_id, balances in member_balances.items():
+        all_currencies = set(list(balances["total_paid"].keys()) + list(balances["total_share"].keys()))
+        for currency in all_currencies:
+            paid = balances["total_paid"].get(currency, 0)
+            share = balances["total_share"].get(currency, 0)
+            balances["net_balance"][currency] = round(paid - share, 2)
+    
+    # Calculate simplified debts (who owes whom) - only for split mode
+    debts = []
+    if mode == "split":
+        # Group debts by currency
+        currency_debts = {}
+        for member_id, balances in member_balances.items():
+            for currency, net in balances["net_balance"].items():
+                if currency not in currency_debts:
+                    currency_debts[currency] = {}
+                currency_debts[currency][member_id] = net
+        
+        # Calculate simplified debts for each currency
+        for currency, net_balances in currency_debts.items():
+            # Separate into creditors and debtors
+            creditors = [(mid, amt) for mid, amt in net_balances.items() if amt > 0]
+            debtors = [(mid, -amt) for mid, amt in net_balances.items() if amt < 0]
+            
+            # Sort by amount
+            creditors.sort(key=lambda x: x[1], reverse=True)
+            debtors.sort(key=lambda x: x[1], reverse=True)
+            
+            # Match debtors to creditors
+            i, j = 0, 0
+            while i < len(debtors) and j < len(creditors):
+                debtor_id, debt_amount = debtors[i]
+                creditor_id, credit_amount = creditors[j]
+                
+                settle_amount = min(debt_amount, credit_amount)
+                
+                if settle_amount > 0.01:  # Ignore tiny amounts
+                    debts.append({
+                        "from_user_id": debtor_id,
+                        "from_user_name": members[debtor_id]["name"],
+                        "from_avatar_color": members[debtor_id]["avatar_color"],
+                        "to_user_id": creditor_id,
+                        "to_user_name": members[creditor_id]["name"],
+                        "to_avatar_color": members[creditor_id]["avatar_color"],
+                        "amount": round(settle_amount, 2),
+                        "currency": currency
+                    })
+                
+                debtors[i] = (debtor_id, debt_amount - settle_amount)
+                creditors[j] = (creditor_id, credit_amount - settle_amount)
+                
+                if debtors[i][1] < 0.01:
+                    i += 1
+                if creditors[j][1] < 0.01:
+                    j += 1
+    
+    # Format response
+    member_balance_list = []
+    for member_id, member_info in members.items():
+        balances = member_balances.get(member_id, {"total_paid": {}, "total_share": {}, "net_balance": {}})
+        member_balance_list.append({
+            "user_id": member_id,
+            "name": member_info["name"],
+            "avatar_color": member_info["avatar_color"],
+            "total_paid": balances["total_paid"],
+            "total_share": balances["total_share"],
+            "net_balance": balances["net_balance"]
+        })
+    
+    return {
+        "group_id": group_id,
+        "group_name": group["name"],
+        "mode": mode,
+        "member_balances": member_balance_list,
+        "debts": debts
+    }
+
+@api_router.post("/settlements")
+async def create_settlement(settlement_data: SettlementCreate, current_user: dict = Depends(get_current_user)):
+    """Record a settlement payment between two users"""
+    group = await db.groups.find_one({"id": settlement_data.group_id})
+    if not group:
+        raise HTTPException(status_code=404, detail="Group not found")
+    
+    if current_user["id"] not in group.get("members", []):
+        raise HTTPException(status_code=403, detail="Not a member of this group")
+    
+    if settlement_data.paid_to not in group.get("members", []):
+        raise HTTPException(status_code=400, detail="Recipient is not a member of this group")
+    
+    if settlement_data.paid_to == current_user["id"]:
+        raise HTTPException(status_code=400, detail="Cannot settle with yourself")
+    
+    # Get user details
+    paid_to_user = await db.users.find_one({"id": settlement_data.paid_to})
+    if not paid_to_user:
+        raise HTTPException(status_code=404, detail="Recipient user not found")
+    
+    settlement_id = str(uuid.uuid4())
+    settlement = {
+        "id": settlement_id,
+        "group_id": settlement_data.group_id,
+        "paid_by": current_user["id"],
+        "paid_to": settlement_data.paid_to,
+        "amount": settlement_data.amount,
+        "currency": settlement_data.currency,
+        "note": settlement_data.note,
+        "date": datetime.utcnow()
+    }
+    
+    await db.settlements.insert_one(settlement)
+    
+    return {
+        "id": settlement_id,
+        "group_id": settlement_data.group_id,
+        "group_name": group["name"],
+        "paid_by": current_user["id"],
+        "paid_by_name": current_user["name"],
+        "paid_to": settlement_data.paid_to,
+        "paid_to_name": paid_to_user["name"],
+        "amount": settlement_data.amount,
+        "currency": settlement_data.currency,
+        "note": settlement_data.note,
+        "date": settlement["date"]
+    }
+
+@api_router.get("/settlements")
+async def get_settlements(group_id: Optional[str] = None, current_user: dict = Depends(get_current_user)):
+    """Get settlements for the user"""
+    query = {"$or": [{"paid_by": current_user["id"]}, {"paid_to": current_user["id"]}]}
+    
+    if group_id:
+        query["group_id"] = group_id
+    
+    settlements_cursor = db.settlements.find(query).sort("date", -1)
+    settlements = []
+    
+    async for settlement in settlements_cursor:
+        # Get group name
+        group = await db.groups.find_one({"id": settlement["group_id"]})
+        group_name = group["name"] if group else "Unknown"
+        
+        # Get user names
+        paid_by_user = await db.users.find_one({"id": settlement["paid_by"]})
+        paid_to_user = await db.users.find_one({"id": settlement["paid_to"]})
+        
+        settlements.append({
+            "id": settlement["id"],
+            "group_id": settlement["group_id"],
+            "group_name": group_name,
+            "paid_by": settlement["paid_by"],
+            "paid_by_name": paid_by_user["name"] if paid_by_user else "Unknown",
+            "paid_to": settlement["paid_to"],
+            "paid_to_name": paid_to_user["name"] if paid_to_user else "Unknown",
+            "amount": settlement["amount"],
+            "currency": settlement["currency"],
+            "note": settlement.get("note", ""),
+            "date": settlement["date"]
+        })
+    
+    return settlements
+
+@api_router.get("/balances/summary")
+async def get_all_balances(current_user: dict = Depends(get_current_user)):
+    """Get overall balance summary across all groups (what you owe/are owed)"""
+    # Get all user's groups
+    groups = await db.groups.find({"members": current_user["id"], "mode": "split"}).to_list(length=100)
+    
+    all_debts_to_pay = []  # What current user owes to others
+    all_debts_to_receive = []  # What others owe to current user
+    
+    for group in groups:
+        # Get balances for this group
+        group_id = group["id"]
+        expenses = await db.expenses.find({"group_id": group_id}).to_list(length=10000)
+        settlements = await db.settlements.find({"group_id": group_id}).to_list(length=10000)
+        
+        members = {}
+        for member_id in group.get("members", []):
+            user = await db.users.find_one({"id": member_id})
+            if user:
+                members[member_id] = {"name": user["name"], "avatar_color": user["avatar_color"]}
+        
+        if len(members) < 2:
+            continue
+        
+        # Calculate net balances
+        member_net = {mid: {} for mid in members}
+        num_members = len(members)
+        
+        for expense in expenses:
+            currency = expense["currency"]
+            amount = expense["amount"]
+            paid_by = expense["paid_by"]
+            share_per_person = amount / num_members
+            
+            for member_id in members:
+                if currency not in member_net[member_id]:
+                    member_net[member_id][currency] = 0
+                if member_id == paid_by:
+                    member_net[member_id][currency] += amount - share_per_person
+                else:
+                    member_net[member_id][currency] -= share_per_person
+        
+        for settlement in settlements:
+            currency = settlement["currency"]
+            amount = settlement["amount"]
+            paid_by = settlement["paid_by"]
+            paid_to = settlement["paid_to"]
+            
+            if paid_by in member_net:
+                if currency not in member_net[paid_by]:
+                    member_net[paid_by][currency] = 0
+                member_net[paid_by][currency] += amount
+            
+            if paid_to in member_net:
+                if currency not in member_net[paid_to]:
+                    member_net[paid_to][currency] = 0
+                member_net[paid_to][currency] -= amount
+        
+        # Calculate debts for current user
+        current_user_net = member_net.get(current_user["id"], {})
+        
+        for currency, net in current_user_net.items():
+            if abs(net) < 0.01:
+                continue
+            
+            if net < 0:
+                # Current user owes money - find who to pay
+                for other_id, other_net in member_net.items():
+                    if other_id == current_user["id"]:
+                        continue
+                    other_balance = other_net.get(currency, 0)
+                    if other_balance > 0.01:
+                        owe_amount = min(-net, other_balance)
+                        if owe_amount > 0.01:
+                            all_debts_to_pay.append({
+                                "group_id": group_id,
+                                "group_name": group["name"],
+                                "user_id": other_id,
+                                "user_name": members[other_id]["name"],
+                                "avatar_color": members[other_id]["avatar_color"],
+                                "amount": round(owe_amount, 2),
+                                "currency": currency
+                            })
+                            net += owe_amount
+                            if net >= -0.01:
+                                break
+            elif net > 0:
+                # Current user is owed money
+                for other_id, other_net in member_net.items():
+                    if other_id == current_user["id"]:
+                        continue
+                    other_balance = other_net.get(currency, 0)
+                    if other_balance < -0.01:
+                        owed_amount = min(net, -other_balance)
+                        if owed_amount > 0.01:
+                            all_debts_to_receive.append({
+                                "group_id": group_id,
+                                "group_name": group["name"],
+                                "user_id": other_id,
+                                "user_name": members[other_id]["name"],
+                                "avatar_color": members[other_id]["avatar_color"],
+                                "amount": round(owed_amount, 2),
+                                "currency": currency
+                            })
+                            net -= owed_amount
+                            if net <= 0.01:
+                                break
+    
+    # Calculate totals by currency
+    total_to_pay = {}
+    total_to_receive = {}
+    
+    for debt in all_debts_to_pay:
+        currency = debt["currency"]
+        if currency not in total_to_pay:
+            total_to_pay[currency] = 0
+        total_to_pay[currency] += debt["amount"]
+    
+    for debt in all_debts_to_receive:
+        currency = debt["currency"]
+        if currency not in total_to_receive:
+            total_to_receive[currency] = 0
+        total_to_receive[currency] += debt["amount"]
+    
+    return {
+        "to_pay": all_debts_to_pay,
+        "to_receive": all_debts_to_receive,
+        "total_to_pay": total_to_pay,
+        "total_to_receive": total_to_receive
+    }
+
+@api_router.put("/groups/{group_id}/mode")
+async def update_group_mode(group_id: str, mode: str, current_user: dict = Depends(get_current_user)):
+    """Update group mode (split/contribution)"""
+    if mode not in ["split", "contribution"]:
+        raise HTTPException(status_code=400, detail="Mode must be 'split' or 'contribution'")
+    
+    group = await db.groups.find_one({"id": group_id})
+    if not group:
+        raise HTTPException(status_code=404, detail="Group not found")
+    
+    if current_user["id"] not in group.get("members", []):
+        raise HTTPException(status_code=403, detail="Not a member of this group")
+    
+    if group.get("type") == "personal":
+        raise HTTPException(status_code=400, detail="Cannot change mode for personal group")
+    
+    await db.groups.update_one({"id": group_id}, {"$set": {"mode": mode}})
+    
+    return {"message": f"Group mode updated to {mode}"}
+
 # ==================== CATEGORY ROUTES ====================
 
 @api_router.get("/categories", response_model=List[CategoryResponse])
