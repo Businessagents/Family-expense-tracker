@@ -2,24 +2,28 @@ import React, { useEffect } from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/src/contexts/AuthContext';
+import { useGroups } from '@/src/contexts/GroupContext';
 
 export default function Index() {
   const router = useRouter();
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, isLocked } = useAuth();
+  const { groups } = useGroups();
 
   useEffect(() => {
     if (!isLoading) {
       if (user) {
-        if (user.family_id) {
-          router.replace('/(main)/home');
+        if (isLocked) {
+          router.replace('/lock');
+        } else if (groups.length === 0) {
+          // Wait for groups to load
         } else {
-          router.replace('/(auth)/family-setup');
+          router.replace('/(main)/home');
         }
       } else {
         router.replace('/(auth)/login');
       }
     }
-  }, [user, isLoading]);
+  }, [user, isLoading, isLocked, groups]);
 
   return (
     <View style={styles.container}>

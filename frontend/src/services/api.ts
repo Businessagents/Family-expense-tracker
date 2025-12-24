@@ -29,6 +29,12 @@ class ApiService {
       throw new Error(error.detail || 'An error occurred');
     }
 
+    // Check if response is CSV
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('text/csv')) {
+      return response;
+    }
+
     return response.json();
   }
 
@@ -51,45 +57,87 @@ class ApiService {
     return this.request('/auth/me');
   }
 
-  async updateProfile(data: { name?: string; default_currency?: string }) {
+  async updateProfile(data: {
+    name?: string;
+    default_currency?: string;
+    biometric_enabled?: boolean;
+    auto_lock_enabled?: boolean;
+    auto_lock_timeout?: number;
+  }) {
     return this.request('/auth/profile', {
       method: 'PUT',
       body: JSON.stringify(data),
     });
   }
 
-  // Family
-  async createFamily(name: string) {
-    return this.request('/family/create', {
+  async verifyPin(pin: string) {
+    return this.request('/auth/verify-pin', {
       method: 'POST',
+      body: JSON.stringify({ pin }),
+    });
+  }
+
+  async updatePin(currentPin: string, newPin: string) {
+    return this.request('/auth/update-pin', {
+      method: 'PUT',
+      body: JSON.stringify({ current_pin: currentPin, new_pin: newPin }),
+    });
+  }
+
+  async checkSession() {
+    return this.request('/auth/session');
+  }
+
+  // Groups
+  async getGroups() {
+    return this.request('/groups');
+  }
+
+  async createGroup(name: string, type: string = 'shared') {
+    return this.request('/groups', {
+      method: 'POST',
+      body: JSON.stringify({ name, type }),
+    });
+  }
+
+  async getGroup(groupId: string) {
+    return this.request(`/groups/${groupId}`);
+  }
+
+  async updateGroup(groupId: string, name: string) {
+    return this.request(`/groups/${groupId}`, {
+      method: 'PUT',
       body: JSON.stringify({ name }),
     });
   }
 
-  async joinFamily(inviteCode: string) {
-    return this.request('/family/join', {
+  async joinGroup(inviteCode: string) {
+    return this.request('/groups/join', {
       method: 'POST',
       body: JSON.stringify({ invite_code: inviteCode }),
     });
   }
 
-  async getFamily() {
-    return this.request('/family');
-  }
-
-  async leaveFamily() {
-    return this.request('/family/leave', {
+  async leaveGroup(groupId: string) {
+    return this.request(`/groups/${groupId}/leave`, {
       method: 'POST',
     });
   }
 
-  // Categories
-  async getCategories() {
-    return this.request('/categories');
+  async deleteGroup(groupId: string) {
+    return this.request(`/groups/${groupId}`, {
+      method: 'DELETE',
+    });
   }
 
-  async createCategory(data: { name: string; icon?: string; color?: string }) {
-    return this.request('/categories', {
+  // Categories
+  async getCategories(groupId?: string) {
+    const query = groupId ? `?group_id=${groupId}` : '';
+    return this.request(`/categories${query}`);
+  }
+
+  async createCategory(data: { name: string; icon?: string; color?: string }, groupId: string) {
+    return this.request(`/categories?group_id=${groupId}`, {
       method: 'POST',
       body: JSON.stringify(data),
     });
@@ -106,6 +154,7 @@ class ApiService {
     amount: number;
     currency: string;
     category_id: string;
+    group_id: string;
     description?: string;
     date?: string;
   }) {
@@ -116,6 +165,7 @@ class ApiService {
   }
 
   async getExpenses(params?: {
+    group_id?: string;
     start_date?: string;
     end_date?: string;
     category_id?: string;
@@ -158,11 +208,12 @@ class ApiService {
   }
 
   // Analytics
-  async getAnalyticsSummary() {
-    return this.request('/analytics/summary');
+  async getAnalyticsSummary(groupId?: string) {
+    const query = groupId ? `?group_id=${groupId}` : '';
+    return this.request(`/analytics/summary${query}`);
   }
 
-  async getAnalyticsByCategory(params?: { start_date?: string; end_date?: string }) {
+  async getAnalyticsByCategory(params?: { group_id?: string; start_date?: string; end_date?: string }) {
     const queryParams = new URLSearchParams();
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
@@ -175,7 +226,7 @@ class ApiService {
     return this.request(`/analytics/by-category${query ? `?${query}` : ''}`);
   }
 
-  async getAnalyticsByMember(params?: { start_date?: string; end_date?: string }) {
+  async getAnalyticsByMember(params?: { group_id?: string; start_date?: string; end_date?: string }) {
     const queryParams = new URLSearchParams();
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
@@ -188,12 +239,44 @@ class ApiService {
     return this.request(`/analytics/by-member${query ? `?${query}` : ''}`);
   }
 
-  async getAnalyticsTrends(months: number = 6) {
-    return this.request(`/analytics/trends?months=${months}`);
+  async getAnalyticsByGroup(params?: { start_date?: string; end_date?: string }) {
+    const queryParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined) {
+          queryParams.append(key, String(value));
+        }
+      });
+    }
+    const query = queryParams.toString();
+    return this.request(`/analytics/by-group${query ? `?${query}` : ''}`);
   }
 
-  async getAnalyticsDaily(days: number = 30) {
-    return this.request(`/analytics/daily?days=${days}`);
+  async getAnalyticsTrends(groupId?: string, months: number = 6) {
+    let query = `?months=${months}`;
+    if (groupId) query += `&group_id=${groupId}`;
+    return this.request(`/analytics/trends${query}`);
+  }
+
+  async getAnalyticsDaily(groupId?: string, days: number = 30) {
+    let query = `?days=${days}`;
+    if (groupId) query += `&group_id=${groupId}`;
+    return this.request(`/analytics/daily${query}`);
+  }
+
+  // Export
+  async exportExpenses(data: {
+    group_id?: string;
+    export_type: 'monthly' | 'all' | 'range';
+    start_date?: string;
+    end_date?: string;
+    month?: number;
+    year?: number;
+  }) {
+    return this.request('/export/csv', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
   }
 
   // Utilities
