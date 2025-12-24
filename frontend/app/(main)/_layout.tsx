@@ -19,7 +19,7 @@ export default function MainLayout() {
         tabBarActiveTintColor: '#10B981',
         tabBarInactiveTintColor: '#64748B',
         tabBarLabelStyle: {
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: '500',
         },
       }}
@@ -34,11 +34,11 @@ export default function MainLayout() {
         }}
       />
       <Tabs.Screen
-        name="expenses"
+        name="balances"
         options={{
-          title: 'Expenses',
+          title: 'Balances',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="list" size={size} color={color} />
+            <Ionicons name="wallet" size={size} color={color} />
           ),
         }}
       />
@@ -80,6 +80,12 @@ export default function MainLayout() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person" size={size} color={color} />
           ),
+        }}
+      />
+      <Tabs.Screen
+        name="expenses"
+        options={{
+          href: null,
         }}
       />
       <Tabs.Screen
