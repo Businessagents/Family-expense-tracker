@@ -6,6 +6,7 @@ interface Group {
   id: string;
   name: string;
   type: 'personal' | 'shared';
+  mode: 'split' | 'contribution';
   invite_code: string | null;
   color: string;
   members: Array<{
@@ -23,7 +24,7 @@ interface GroupContextType {
   isLoading: boolean;
   fetchGroups: () => Promise<void>;
   selectGroup: (group: Group | null) => void;
-  createGroup: (name: string, type?: string) => Promise<Group>;
+  createGroup: (name: string, mode?: 'split' | 'contribution') => Promise<Group>;
   joinGroup: (inviteCode: string) => Promise<Group>;
   leaveGroup: (groupId: string) => Promise<void>;
   deleteGroup: (groupId: string) => Promise<void>;
