@@ -96,6 +96,7 @@ class UserResponse(BaseModel):
 class GroupCreate(BaseModel):
     name: str
     type: str = "shared"  # "personal" or "shared"
+    mode: str = "split"  # "split" (track debts) or "contribution" (family mode - no debt tracking)
 
 class GroupJoin(BaseModel):
     invite_code: str
@@ -104,11 +105,47 @@ class GroupResponse(BaseModel):
     id: str
     name: str
     type: str  # "personal" or "shared"
+    mode: str = "split"  # "split" or "contribution"
     invite_code: Optional[str] = None
     color: str
     members: List[dict]
     created_by: str
     created_at: datetime
+
+class SettlementCreate(BaseModel):
+    group_id: str
+    paid_to: str  # User ID who received the payment
+    amount: float
+    currency: str = "INR"
+    note: str = ""
+
+class SettlementResponse(BaseModel):
+    id: str
+    group_id: str
+    group_name: str
+    paid_by: str
+    paid_by_name: str
+    paid_to: str
+    paid_to_name: str
+    amount: float
+    currency: str
+    note: str
+    date: datetime
+
+class MemberBalance(BaseModel):
+    user_id: str
+    name: str
+    avatar_color: str
+    total_paid: dict  # {currency: amount}
+    total_share: dict  # {currency: amount}
+    net_balance: dict  # {currency: amount} - positive means owed to them
+
+class GroupBalanceResponse(BaseModel):
+    group_id: str
+    group_name: str
+    mode: str
+    member_balances: List[MemberBalance]
+    debts: List[dict]  # Who owes whom (only for split mode)
 
 class CategoryCreate(BaseModel):
     name: str
