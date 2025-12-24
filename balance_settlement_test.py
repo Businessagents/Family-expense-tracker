@@ -485,14 +485,23 @@ class FamilyFinanceAPITester:
             self.log_test("Change to Contribution Mode", False, f"Failed to change mode: {error_msg}")
             return False
         
+        # Add a small delay to ensure the change is persisted
+        time.sleep(1)
+        
         # Verify mode change by getting group details
         response = self.make_request("GET", f"/groups/{self.group_id}", None, headers)
         if response and response.status_code == 200:
             data = response.json()
+            print(f"DEBUG: Group data after mode change: {data}")  # Debug output
             if data.get("mode") == "contribution":
                 self.log_test("Verify Contribution Mode", True, "Group mode successfully changed to contribution")
             else:
                 self.log_test("Verify Contribution Mode", False, f"Mode not changed. Expected 'contribution', got '{data.get('mode')}'")
+                # Let's also check the balances endpoint to see if it reflects the mode change
+                balance_response = self.make_request("GET", f"/groups/{self.group_id}/balances", None, headers)
+                if balance_response and balance_response.status_code == 200:
+                    balance_data = balance_response.json()
+                    print(f"DEBUG: Balance data mode: {balance_data.get('mode')}")
                 return False
         else:
             self.log_test("Verify Contribution Mode", False, "Failed to verify mode change")
