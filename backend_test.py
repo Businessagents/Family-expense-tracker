@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 import time
 
 # Backend URL from environment
-BACKEND_URL = "https://splitfamily.preview.emergentagent.com/api"
+BACKEND_URL = "https://work-1-hkfvhpbtdmblhfkr.prod-runtime.all-hands.dev/api"
 
 class FamilyFinanceAPITester:
     def __init__(self):
