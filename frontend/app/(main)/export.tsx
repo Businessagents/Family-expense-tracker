@@ -87,6 +87,8 @@ export default function Export() {
       let filename = `${groupName}_`;
       if (exportType === 'monthly') {
         filename += `${selectedYear}_${String(selectedMonth).padStart(2, '0')}.csv`;
+      } else if (exportType === 'range') {
+        filename += `${formatDateString(startDate)}_to_${formatDateString(endDate)}.csv`;
       } else {
         filename += 'all_expenses.csv';
       }
