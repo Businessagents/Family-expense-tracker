@@ -504,6 +504,7 @@ async def get_groups(current_user: dict = Depends(get_current_user)):
             id=group["id"],
             name=group["name"],
             type=group.get("type", "shared"),
+            mode=group.get("mode", "split"),
             invite_code=group.get("invite_code"),
             color=group.get("color", "#10B981"),
             members=members,
