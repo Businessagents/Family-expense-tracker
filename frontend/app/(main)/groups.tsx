@@ -144,6 +144,26 @@ export default function Groups() {
                 />
               </View>
 
+              <Text style={styles.label}>Group Mode</Text>
+              <View style={styles.modeContainer}>
+                <TouchableOpacity
+                  style={[styles.modeOption, groupMode === 'split' && styles.modeOptionActive]}
+                  onPress={() => setGroupMode('split')}
+                >
+                  <Ionicons name="git-branch" size={24} color={groupMode === 'split' ? '#10B981' : '#64748B'} />
+                  <Text style={[styles.modeTitle, groupMode === 'split' && styles.modeTitleActive]}>Split Mode</Text>
+                  <Text style={styles.modeDesc}>Track who owes whom. Good for friends, roommates.</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.modeOption, groupMode === 'contribution' && styles.modeOptionActive]}
+                  onPress={() => setGroupMode('contribution')}
+                >
+                  <Ionicons name="heart" size={24} color={groupMode === 'contribution' ? '#10B981' : '#64748B'} />
+                  <Text style={[styles.modeTitle, groupMode === 'contribution' && styles.modeTitleActive]}>Family Mode</Text>
+                  <Text style={styles.modeDesc}>Track contributions only, no debt tracking. Good for family.</Text>
+                </TouchableOpacity>
+              </View>
+
               <TouchableOpacity
                 style={[styles.button, isLoading && styles.buttonDisabled]}
                 onPress={handleCreateGroup}
