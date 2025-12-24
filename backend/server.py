@@ -524,10 +524,14 @@ async def create_group(group_data: GroupCreate, current_user: dict = Depends(get
         while await db.groups.find_one({"invite_code": invite_code}):
             invite_code = generate_invite_code()
     
+    # Personal groups always use contribution mode (no debt tracking)
+    mode = "contribution" if group_data.type == "personal" else group_data.mode
+    
     group = {
         "id": group_id,
         "name": group_data.name,
         "type": group_data.type,
+        "mode": mode,
         "invite_code": invite_code,
         "color": random.choice(GROUP_COLORS),
         "members": [current_user["id"]],
@@ -547,6 +551,7 @@ async def create_group(group_data: GroupCreate, current_user: dict = Depends(get
         id=group_id,
         name=group_data.name,
         type=group_data.type,
+        mode=mode,
         invite_code=invite_code,
         color=group["color"],
         members=members,
