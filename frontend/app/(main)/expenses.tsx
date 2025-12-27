@@ -178,7 +178,7 @@ export default function Expenses() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#10B981" />
+          <ActivityIndicator size="large" color="#22D3EE" />
         </View>
       </SafeAreaView>
     );
@@ -193,7 +193,7 @@ export default function Expenses() {
           <Ionicons
             name="filter"
             size={20}
-            color={filterMember || filterCategory ? '#10B981' : '#F8FAFC'}
+            color={filterMember || filterCategory ? '#22D3EE' : '#F8FAFC'}
           />
           {(filterMember || filterCategory) && <View style={styles.filterDot} />}
         </TouchableOpacity>
@@ -250,7 +250,7 @@ export default function Expenses() {
       <FlatList
         data={groupedData}
         keyExtractor={(item) => item.date}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#10B981" />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#22D3EE" />}
         contentContainerStyle={styles.listContent}
         ListEmptyComponent={
           <View style={styles.emptyState}>
@@ -384,7 +384,7 @@ export default function Expenses() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F172A',
+    backgroundColor: '#0B1F2A',
   },
   loadingContainer: {
     flex: 1,
@@ -414,7 +414,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#10B981',
+    backgroundColor: '#22D3EE',
   },
   searchContainer: {
     flexDirection: 'row',
@@ -460,7 +460,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   clearFilters: {
-    color: '#10B981',
+    color: '#22D3EE',
     fontSize: 12,
     fontWeight: '500',
   },
@@ -584,13 +584,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: '#0F172A',
+    backgroundColor: '#0B1F2A',
     borderWidth: 1,
     borderColor: '#334155',
   },
   filterOptionActive: {
-    backgroundColor: '#10B981',
-    borderColor: '#10B981',
+    backgroundColor: '#22D3EE',
+    borderColor: '#22D3EE',
   },
   filterOptionText: {
     color: '#94A3B8',
@@ -606,7 +606,7 @@ const styles = StyleSheet.create({
     marginRight: 6,
   },
   applyButton: {
-    backgroundColor: '#10B981',
+    backgroundColor: '#22D3EE',
     borderRadius: 12,
     height: 52,
     alignItems: 'center',

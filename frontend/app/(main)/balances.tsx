@@ -122,7 +122,7 @@ export default function Balances() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#10B981" />
+          <ActivityIndicator size="large" color="#22D3EE" />
         </View>
       </SafeAreaView>
     );
@@ -134,7 +134,7 @@ export default function Balances() {
     <SafeAreaView style={styles.container}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#10B981" />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#22D3EE" />}
       >
         <Text style={styles.title}>Balances</Text>
 
@@ -146,7 +146,7 @@ export default function Balances() {
             <Text style={styles.summaryAmount}>{formatTotal(balances?.total_to_pay || {})}</Text>
           </View>
           <View style={[styles.summaryCard, styles.owedCard]}>
-            <Ionicons name="arrow-down-circle" size={24} color="#10B981" />
+            <Ionicons name="arrow-down-circle" size={24} color="#22D3EE" />
             <Text style={styles.summaryLabel}>You're Owed</Text>
             <Text style={styles.summaryAmount}>{formatTotal(balances?.total_to_receive || {})}</Text>
           </View>
@@ -154,7 +154,7 @@ export default function Balances() {
 
         {!hasDebts ? (
           <View style={styles.emptyState}>
-            <Ionicons name="checkmark-circle" size={64} color="#10B981" />
+            <Ionicons name="checkmark-circle" size={64} color="#22D3EE" />
             <Text style={styles.emptyTitle}>All Settled!</Text>
             <Text style={styles.emptySubtext}>You have no outstanding balances</Text>
           </View>
@@ -302,7 +302,7 @@ export default function Balances() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F172A',
+    backgroundColor: '#0B1F2A',
   },
   loadingContainer: {
     flex: 1,
@@ -336,9 +336,9 @@ const styles = StyleSheet.create({
     borderColor: '#EF444440',
   },
   owedCard: {
-    backgroundColor: '#10B98120',
+    backgroundColor: '#22D3EE20',
     borderWidth: 1,
-    borderColor: '#10B98140',
+    borderColor: '#22D3EE40',
   },
   summaryLabel: {
     fontSize: 12,
@@ -430,10 +430,10 @@ const styles = StyleSheet.create({
     color: '#EF4444',
   },
   owedAmount: {
-    color: '#10B981',
+    color: '#22D3EE',
   },
   settleButton: {
-    backgroundColor: '#10B981',
+    backgroundColor: '#22D3EE',
     paddingHorizontal: 16,
     paddingVertical: 6,
     borderRadius: 16,
@@ -524,14 +524,14 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   input: {
-    backgroundColor: '#0F172A',
+    backgroundColor: '#0B1F2A',
     borderRadius: 12,
     padding: 16,
     color: '#F8FAFC',
     fontSize: 16,
   },
   confirmButton: {
-    backgroundColor: '#10B981',
+    backgroundColor: '#22D3EE',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',

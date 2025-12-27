@@ -184,7 +184,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     try {
       const result = await LocalAuthentication.authenticateAsync({
-        promptMessage: 'Unlock Family Finance',
+        promptMessage: 'Unlock Family Expense Tracker',
         fallbackLabel: 'Use PIN',
         cancelLabel: 'Cancel',
       });

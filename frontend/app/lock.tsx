@@ -123,7 +123,7 @@ export default function LockScreen() {
                     style={styles.key}
                     onPress={handleBiometricUnlock}
                   >
-                    <Ionicons name="finger-print" size={28} color="#10B981" />
+                    <Ionicons name="finger-print" size={28} color="#22D3EE" />
                   </TouchableOpacity>
                 );
               }
@@ -160,7 +160,7 @@ export default function LockScreen() {
       <View style={styles.content}>
         <View style={styles.header}>
           <View style={styles.avatarContainer}>
-            <Ionicons name="lock-closed" size={40} color="#10B981" />
+            <Ionicons name="lock-closed" size={40} color="#22D3EE" />
           </View>
           <Text style={styles.title}>Welcome Back</Text>
           <Text style={styles.subtitle}>{user?.name}</Text>
@@ -170,7 +170,7 @@ export default function LockScreen() {
         {renderPinDots()}
 
         {isLoading ? (
-          <ActivityIndicator size="large" color="#10B981" style={styles.loader} />
+          <ActivityIndicator size="large" color="#22D3EE" style={styles.loader} />
         ) : (
           <>
             {renderKeypad()}
@@ -188,7 +188,7 @@ export default function LockScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F172A',
+    backgroundColor: '#0B1F2A',
   },
   content: {
     flex: 1,
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#10B98120',
+    backgroundColor: '#22D3EE20',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 16,
-    color: '#10B981',
+    color: '#22D3EE',
     marginBottom: 8,
   },
   instruction: {
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   pinDotFilled: {
-    backgroundColor: '#10B981',
+    backgroundColor: '#22D3EE',
   },
   keypad: {
     marginBottom: 24,
@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
     marginVertical: 40,
   },
   unlockButton: {
-    backgroundColor: '#10B981',
+    backgroundColor: '#22D3EE',
     borderRadius: 12,
     height: 56,
     alignItems: 'center',

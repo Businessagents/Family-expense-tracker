@@ -72,7 +72,7 @@ export default function FamilySetup() {
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <View style={styles.header}>
             <View style={styles.logoContainer}>
-              <Ionicons name="people" size={60} color="#10B981" />
+              <Ionicons name="people" size={60} color="#22D3EE" />
             </View>
             <Text style={styles.title}>Family Setup</Text>
             <Text style={styles.subtitle}>Create a new family or join an existing one</Text>
@@ -80,8 +80,8 @@ export default function FamilySetup() {
 
           <View style={styles.options}>
             <TouchableOpacity style={styles.optionCard} onPress={() => setMode('create')}>
-              <View style={[styles.optionIcon, { backgroundColor: '#10B98120' }]}>
-                <Ionicons name="add-circle" size={32} color="#10B981" />
+              <View style={[styles.optionIcon, { backgroundColor: '#22D3EE20' }]}>
+                <Ionicons name="add-circle" size={32} color="#22D3EE" />
               </View>
               <Text style={styles.optionTitle}>Create Family</Text>
               <Text style={styles.optionDesc}>Start a new family group and invite members</Text>
@@ -181,7 +181,7 @@ export default function FamilySetup() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F172A',
+    backgroundColor: '#0B1F2A',
   },
   keyboardView: {
     flex: 1,
@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   button: {
-    backgroundColor: '#10B981',
+    backgroundColor: '#22D3EE',
     borderRadius: 12,
     height: 56,
     alignItems: 'center',

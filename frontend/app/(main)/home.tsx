@@ -125,7 +125,7 @@ export default function Home() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#10B981" />
+          <ActivityIndicator size="large" color="#22D3EE" />
         </View>
       </SafeAreaView>
     );
@@ -135,7 +135,7 @@ export default function Home() {
     <SafeAreaView style={styles.container}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#10B981" />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#22D3EE" />}
       >
         {/* Header */}
         <View style={styles.header}>
@@ -151,7 +151,7 @@ export default function Home() {
         {/* Group Selector */}
         <TouchableOpacity style={styles.groupSelector} onPress={() => setShowGroupSelector(true)}>
           <View style={styles.groupSelectorContent}>
-            <View style={[styles.groupDot, { backgroundColor: selectedGroup?.color || '#10B981' }]} />
+            <View style={[styles.groupDot, { backgroundColor: selectedGroup?.color || '#22D3EE' }]} />
             <Text style={styles.groupName}>{selectedGroup?.name || 'Select Group'}</Text>
             {selectedGroup?.type === 'personal' && (
               <View style={styles.personalBadge}>
@@ -274,9 +274,9 @@ export default function Home() {
                 setShowGroupSelector(false);
               }}
             >
-              <View style={[styles.groupOptionDot, { backgroundColor: '#10B981' }]} />
+              <View style={[styles.groupOptionDot, { backgroundColor: '#22D3EE' }]} />
               <Text style={styles.groupOptionText}>All Groups</Text>
-              {!selectedGroup && <Ionicons name="checkmark" size={20} color="#10B981" />}
+              {!selectedGroup && <Ionicons name="checkmark" size={20} color="#22D3EE" />}
             </TouchableOpacity>
 
             {groups.map((group) => (
@@ -295,7 +295,7 @@ export default function Home() {
                     <Text style={styles.groupOptionType}>Personal</Text>
                   )}
                 </View>
-                {selectedGroup?.id === group.id && <Ionicons name="checkmark" size={20} color="#10B981" />}
+                {selectedGroup?.id === group.id && <Ionicons name="checkmark" size={20} color="#22D3EE" />}
               </TouchableOpacity>
             ))}
 
@@ -306,7 +306,7 @@ export default function Home() {
                 router.push('/(main)/groups');
               }}
             >
-              <Ionicons name="add-circle" size={20} color="#10B981" />
+              <Ionicons name="add-circle" size={20} color="#22D3EE" />
               <Text style={styles.createGroupText}>Create or Join Group</Text>
             </TouchableOpacity>
           </View>
@@ -319,7 +319,7 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F172A',
+    backgroundColor: '#0B1F2A',
   },
   loadingContainer: {
     flex: 1,
@@ -372,14 +372,14 @@ const styles = StyleSheet.create({
     color: '#F8FAFC',
   },
   personalBadge: {
-    backgroundColor: '#10B98120',
+    backgroundColor: '#22D3EE20',
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 8,
     marginLeft: 8,
   },
   personalBadgeText: {
-    color: '#10B981',
+    color: '#22D3EE',
     fontSize: 12,
     fontWeight: '500',
   },
@@ -396,8 +396,8 @@ const styles = StyleSheet.create({
     borderColor: '#334155',
   },
   currencyChipActive: {
-    backgroundColor: '#10B981',
-    borderColor: '#10B981',
+    backgroundColor: '#22D3EE',
+    borderColor: '#22D3EE',
   },
   currencyChipText: {
     color: '#94A3B8',
@@ -419,8 +419,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   todayCard: {
-    backgroundColor: '#10B98115',
-    borderColor: '#10B98130',
+    backgroundColor: '#22D3EE15',
+    borderColor: '#22D3EE30',
   },
   monthCard: {
     backgroundColor: '#3B82F615',
@@ -465,7 +465,7 @@ const styles = StyleSheet.create({
   },
   seeAll: {
     fontSize: 14,
-    color: '#10B981',
+    color: '#22D3EE',
     fontWeight: '500',
   },
   emptyState: {
@@ -561,12 +561,12 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 12,
     marginBottom: 8,
-    backgroundColor: '#0F172A',
+    backgroundColor: '#0B1F2A',
   },
   groupOptionActive: {
-    backgroundColor: '#10B98120',
+    backgroundColor: '#22D3EE20',
     borderWidth: 1,
-    borderColor: '#10B981',
+    borderColor: '#22D3EE',
   },
   groupOptionDot: {
     width: 12,
@@ -597,7 +597,7 @@ const styles = StyleSheet.create({
   },
   createGroupText: {
     fontSize: 16,
-    color: '#10B981',
+    color: '#22D3EE',
     fontWeight: '500',
     marginLeft: 8,
   },

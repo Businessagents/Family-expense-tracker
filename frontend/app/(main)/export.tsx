@@ -160,7 +160,7 @@ export default function Export() {
             style={[styles.exportTypeOption, exportType === 'all' && styles.exportTypeOptionActive]}
             onPress={() => setExportType('all')}
           >
-            <Ionicons name="documents" size={24} color={exportType === 'all' ? '#10B981' : '#64748B'} />
+            <Ionicons name="documents" size={24} color={exportType === 'all' ? '#22D3EE' : '#64748B'} />
             <Text style={[styles.exportTypeText, exportType === 'all' && styles.exportTypeTextActive]}>
               Entire History
             </Text>
@@ -171,7 +171,7 @@ export default function Export() {
             style={[styles.exportTypeOption, exportType === 'monthly' && styles.exportTypeOptionActive]}
             onPress={() => setExportType('monthly')}
           >
-            <Ionicons name="calendar" size={24} color={exportType === 'monthly' ? '#10B981' : '#64748B'} />
+            <Ionicons name="calendar" size={24} color={exportType === 'monthly' ? '#22D3EE' : '#64748B'} />
             <Text style={[styles.exportTypeText, exportType === 'monthly' && styles.exportTypeTextActive]}>
               Monthly
             </Text>
@@ -184,7 +184,7 @@ export default function Export() {
           style={[styles.dateRangeOption, exportType === 'range' && styles.dateRangeOptionActive]}
           onPress={() => setExportType('range')}
         >
-          <Ionicons name="calendar-outline" size={24} color={exportType === 'range' ? '#10B981' : '#64748B'} />
+          <Ionicons name="calendar-outline" size={24} color={exportType === 'range' ? '#22D3EE' : '#64748B'} />
           <View style={styles.dateRangeTextContainer}>
             <Text style={[styles.exportTypeText, exportType === 'range' && styles.exportTypeTextActive]}>
               Date Range
@@ -258,7 +258,7 @@ export default function Export() {
               >
                 <Text style={styles.datePickerLabel}>Start Date</Text>
                 <Text style={styles.datePickerValue}>{formatDisplayDate(startDate)}</Text>
-                <Ionicons name="calendar" size={20} color="#10B981" />
+                <Ionicons name="calendar" size={20} color="#22D3EE" />
               </TouchableOpacity>
 
               <Ionicons name="arrow-forward" size={20} color="#64748B" />
@@ -269,7 +269,7 @@ export default function Export() {
               >
                 <Text style={styles.datePickerLabel}>End Date</Text>
                 <Text style={styles.datePickerValue}>{formatDisplayDate(endDate)}</Text>
-                <Ionicons name="calendar" size={20} color="#10B981" />
+                <Ionicons name="calendar" size={20} color="#22D3EE" />
               </TouchableOpacity>
             </View>
           </View>
@@ -438,7 +438,7 @@ export default function Export() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F172A',
+    backgroundColor: '#0B1F2A',
   },
   header: {
     flexDirection: 'row',
@@ -485,7 +485,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   optionActive: {
-    backgroundColor: '#10B981',
+    backgroundColor: '#22D3EE',
   },
   optionText: {
     fontSize: 14,
@@ -515,8 +515,8 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   exportTypeOptionActive: {
-    borderColor: '#10B981',
-    backgroundColor: '#10B98115',
+    borderColor: '#22D3EE',
+    backgroundColor: '#22D3EE15',
   },
   exportTypeText: {
     fontSize: 16,
@@ -525,7 +525,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   exportTypeTextActive: {
-    color: '#10B981',
+    color: '#22D3EE',
   },
   exportTypeDesc: {
     fontSize: 12,
@@ -551,7 +551,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   monthChipActive: {
-    backgroundColor: '#10B981',
+    backgroundColor: '#22D3EE',
   },
   monthChipText: {
     fontSize: 14,
@@ -572,7 +572,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   yearChipActive: {
-    backgroundColor: '#10B981',
+    backgroundColor: '#22D3EE',
   },
   yearChipText: {
     fontSize: 14,
@@ -584,7 +584,7 @@ const styles = StyleSheet.create({
   },
   exportButton: {
     flexDirection: 'row',
-    backgroundColor: '#10B981',
+    backgroundColor: '#22D3EE',
     borderRadius: 12,
     height: 56,
     alignItems: 'center',
@@ -627,8 +627,8 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   dateRangeOptionActive: {
-    borderColor: '#10B981',
-    backgroundColor: '#10B98115',
+    borderColor: '#22D3EE',
+    backgroundColor: '#22D3EE15',
   },
   dateRangeTextContainer: {
     flex: 1,
@@ -681,7 +681,7 @@ const styles = StyleSheet.create({
     color: '#F8FAFC',
   },
   modalDoneButton: {
-    backgroundColor: '#10B981',
+    backgroundColor: '#22D3EE',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',

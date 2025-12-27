@@ -69,7 +69,7 @@ export default function Register() {
 
           <View style={styles.header}>
             <Text style={styles.title}>Create Account</Text>
-            <Text style={styles.subtitle}>Join your family's finance tracking</Text>
+            <Text style={styles.subtitle}>Build a modern, shared ledger for your home.</Text>
           </View>
 
           <View style={styles.form}>
@@ -158,7 +158,7 @@ export default function Register() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F172A',
+    backgroundColor: '#0B1F2A',
   },
   keyboardView: {
     flex: 1,
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   button: {
-    backgroundColor: '#10B981',
+    backgroundColor: '#22D3EE',
     borderRadius: 12,
     height: 56,
     alignItems: 'center',
@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   footerLink: {
-    color: '#10B981',
+    color: '#22D3EE',
     fontSize: 16,
     fontWeight: '600',
   },

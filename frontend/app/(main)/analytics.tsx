@@ -110,7 +110,7 @@ export default function Analytics() {
     return trendData.map((trend) => ({
       value: trend.amounts[selectedCurrency] || 0,
       label: trend.month.substring(0, 3),
-      frontColor: '#10B981',
+      frontColor: '#22D3EE',
     }));
   };
 
@@ -126,7 +126,7 @@ export default function Analytics() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#10B981" />
+          <ActivityIndicator size="large" color="#22D3EE" />
         </View>
       </SafeAreaView>
     );
@@ -136,7 +136,7 @@ export default function Analytics() {
     <SafeAreaView style={styles.container}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#10B981" />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#22D3EE" />}
       >
         <Text style={styles.title}>Analytics</Text>
 
@@ -182,7 +182,7 @@ export default function Analytics() {
         {activeTab === 'overview' && (
           <View>
             <View style={styles.summaryGrid}>
-              <View style={[styles.summaryCard, { backgroundColor: '#10B98115', borderColor: '#10B98130' }]}>
+              <View style={[styles.summaryCard, { backgroundColor: '#22D3EE15', borderColor: '#22D3EE30' }]}>
                 <Text style={styles.summaryLabel}>Today</Text>
                 <Text style={styles.summaryValue}>
                   {formatAmount(summary?.today?.[selectedCurrency] || 0)}
@@ -211,7 +211,7 @@ export default function Analytics() {
             {/* Quick Stats */}
             <View style={styles.quickStats}>
               <View style={styles.statItem}>
-                <Ionicons name="receipt" size={24} color="#10B981" />
+                <Ionicons name="receipt" size={24} color="#22D3EE" />
                 <Text style={styles.statValue}>{summary?.total_count || 0}</Text>
                 <Text style={styles.statLabel}>Total Expenses</Text>
               </View>
@@ -375,7 +375,7 @@ export default function Analytics() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F172A',
+    backgroundColor: '#0B1F2A',
   },
   loadingContainer: {
     flex: 1,
@@ -405,8 +405,8 @@ const styles = StyleSheet.create({
     borderColor: '#334155',
   },
   currencyChipActive: {
-    backgroundColor: '#10B981',
-    borderColor: '#10B981',
+    backgroundColor: '#22D3EE',
+    borderColor: '#22D3EE',
   },
   currencyChipText: {
     color: '#94A3B8',
@@ -430,7 +430,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   tabActive: {
-    backgroundColor: '#10B981',
+    backgroundColor: '#22D3EE',
   },
   tabText: {
     color: '#94A3B8',
@@ -610,6 +610,6 @@ const styles = StyleSheet.create({
   trendAmount: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#10B981',
+    color: '#22D3EE',
   },
 });

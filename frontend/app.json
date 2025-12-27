@@ -1,23 +1,23 @@
 {
   "expo": {
-    "name": "Family Finance",
-    "slug": "family-finance",
+    "name": "Family Expense Tracker",
+    "slug": "family-expense-tracker",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "familyfinance",
+    "scheme": "familyexpensetracker",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.familyfinance.app"
+      "bundleIdentifier": "com.familyexpensetracker.app"
     },
     "android": {
-      "package": "com.familyfinance.app",
+      "package": "com.familyexpensetracker.app",
       "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#0F172A"
+        "backgroundColor": "#0B1F2A"
       },
       "edgeToEdgeEnabled": true,
       "permissions": [
@@ -45,7 +45,7 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#0F172A"
+          "backgroundColor": "#0B1F2A"
         }
       ]
     ],

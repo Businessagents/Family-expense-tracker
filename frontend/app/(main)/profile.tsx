@@ -136,7 +136,7 @@ export default function Profile() {
 
         {/* User Profile Card */}
         <View style={styles.profileCard}>
-          <View style={[styles.avatar, { backgroundColor: user?.avatar_color || '#10B981' }]}>
+          <View style={[styles.avatar, { backgroundColor: user?.avatar_color || '#22D3EE' }]}>
             <Text style={styles.avatarText}>{user?.name?.[0]?.toUpperCase() || 'U'}</Text>
           </View>
           <Text style={styles.userName}>{user?.name}</Text>
@@ -163,14 +163,14 @@ export default function Profile() {
             {/* PIN Lock */}
             <View style={styles.settingRow}>
               <View style={styles.settingLeft}>
-                <Ionicons name="lock-closed" size={20} color="#10B981" />
+                <Ionicons name="lock-closed" size={20} color="#22D3EE" />
                 <Text style={styles.settingLabel}>App Lock</Text>
               </View>
               <Switch
                 value={user?.auto_lock_enabled || false}
                 onValueChange={handleToggleAutoLock}
-                trackColor={{ false: '#334155', true: '#10B98150' }}
-                thumbColor={user?.auto_lock_enabled ? '#10B981' : '#64748B'}
+                trackColor={{ false: '#334155', true: '#22D3EE50' }}
+                thumbColor={user?.auto_lock_enabled ? '#22D3EE' : '#64748B'}
               />
             </View>
 
@@ -230,7 +230,7 @@ export default function Profile() {
           <View style={styles.card}>
             <TouchableOpacity style={styles.settingRow} onPress={() => setShowCurrencyModal(true)}>
               <View style={styles.settingLeft}>
-                <Ionicons name="cash" size={20} color="#10B981" />
+                <Ionicons name="cash" size={20} color="#22D3EE" />
                 <Text style={styles.settingLabel}>Default Currency</Text>
               </View>
               <View style={styles.settingRight}>
@@ -249,7 +249,7 @@ export default function Profile() {
           <View style={styles.card}>
             <TouchableOpacity style={styles.settingRow} onPress={() => router.push('/(main)/export')}>
               <View style={styles.settingLeft}>
-                <Ionicons name="download" size={20} color="#10B981" />
+                <Ionicons name="download" size={20} color="#22D3EE" />
                 <Text style={styles.settingLabel}>Export Expenses</Text>
               </View>
               <Ionicons name="chevron-forward" size={20} color="#64748B" />
@@ -272,7 +272,7 @@ export default function Profile() {
         </TouchableOpacity>
 
         {/* App Version */}
-        <Text style={styles.version}>Family Finance v2.0.0</Text>
+        <Text style={styles.version}>Family Expense Tracker v2.0.0</Text>
       </ScrollView>
 
       {/* Currency Modal */}
@@ -297,7 +297,7 @@ export default function Profile() {
                 <Text style={styles.currencySymbol}>{CURRENCY_SYMBOLS[currency]}</Text>
                 <Text style={styles.currencyName}>{currency}</Text>
                 {user?.default_currency === currency && (
-                  <Ionicons name="checkmark" size={20} color="#10B981" />
+                  <Ionicons name="checkmark" size={20} color="#22D3EE" />
                 )}
               </TouchableOpacity>
             ))}
@@ -326,7 +326,7 @@ export default function Profile() {
               >
                 <Text style={styles.currencyName}>{option.label}</Text>
                 {user?.auto_lock_timeout === option.value && (
-                  <Ionicons name="checkmark" size={20} color="#10B981" />
+                  <Ionicons name="checkmark" size={20} color="#22D3EE" />
                 )}
               </TouchableOpacity>
             ))}
@@ -413,7 +413,7 @@ export default function Profile() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F172A',
+    backgroundColor: '#0B1F2A',
   },
   scrollContent: {
     padding: 16,
@@ -469,7 +469,7 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#10B981',
+    color: '#22D3EE',
   },
   statLabel: {
     fontSize: 12,
@@ -567,12 +567,12 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 12,
     marginBottom: 8,
-    backgroundColor: '#0F172A',
+    backgroundColor: '#0B1F2A',
   },
   currencyOptionActive: {
-    backgroundColor: '#10B98120',
+    backgroundColor: '#22D3EE20',
     borderWidth: 1,
-    borderColor: '#10B981',
+    borderColor: '#22D3EE',
   },
   currencySymbol: {
     fontSize: 20,
@@ -594,14 +594,14 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   pinInput: {
-    backgroundColor: '#0F172A',
+    backgroundColor: '#0B1F2A',
     borderRadius: 12,
     padding: 16,
     color: '#F8FAFC',
     fontSize: 16,
   },
   changePinButton: {
-    backgroundColor: '#10B981',
+    backgroundColor: '#22D3EE',
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',

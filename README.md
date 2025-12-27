@@ -1,6 +1,6 @@
-# Family Finance Tracker
+# Family Expense Tracker
 
-A comprehensive mobile application for tracking household and personal expenses, similar to Splitwise. Built with React Native (Expo) and FastAPI, designed for families and groups to manage shared finances efficiently.
+A modern expense companion for Indian households, helping families track, share, and settle spending with clarity. Built with React Native (Expo) and FastAPI, designed for families and groups to manage shared finances efficiently.
 
 ![Platform](https://img.shields.io/badge/Platform-iOS%20%7C%20Android%20%7C%20Web-blue)
 ![Tech Stack](https://img.shields.io/badge/Stack-Expo%20%7C%20FastAPI%20%7C%20MongoDB-green)
