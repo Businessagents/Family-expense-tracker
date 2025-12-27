@@ -16,7 +16,7 @@ export default function MainLayout() {
           paddingTop: 8,
           paddingBottom: Platform.OS === 'ios' ? 28 : 8,
         },
-        tabBarActiveTintColor: '#10B981',
+        tabBarActiveTintColor: '#22D3EE',
         tabBarInactiveTintColor: '#64748B',
         tabBarLabelStyle: {
           fontSize: 11,
@@ -52,7 +52,7 @@ export default function MainLayout() {
                 width: 48,
                 height: 48,
                 borderRadius: 24,
-                backgroundColor: focused ? '#10B981' : '#10B98140',
+                backgroundColor: focused ? '#22D3EE' : '#22D3EE40',
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginTop: -20,

@@ -66,7 +66,7 @@ export default function Groups() {
   const handleShareInviteCode = async (code: string, name: string) => {
     try {
       await Share.share({
-        message: `Join "${name}" on Family Finance app! Use invite code: ${code}`,
+        message: `Join "${name}" on Family Expense Tracker app! Use invite code: ${code}`,
       });
     } catch (error) {
       console.error('Error sharing:', error);
@@ -150,7 +150,7 @@ export default function Groups() {
                   style={[styles.modeOption, groupMode === 'split' && styles.modeOptionActive]}
                   onPress={() => setGroupMode('split')}
                 >
-                  <Ionicons name="git-branch" size={24} color={groupMode === 'split' ? '#10B981' : '#64748B'} />
+                  <Ionicons name="git-branch" size={24} color={groupMode === 'split' ? '#22D3EE' : '#64748B'} />
                   <Text style={[styles.modeTitle, groupMode === 'split' && styles.modeTitleActive]}>Split Mode</Text>
                   <Text style={styles.modeDesc}>Track who owes whom. Good for friends, roommates.</Text>
                 </TouchableOpacity>
@@ -158,7 +158,7 @@ export default function Groups() {
                   style={[styles.modeOption, groupMode === 'contribution' && styles.modeOptionActive]}
                   onPress={() => setGroupMode('contribution')}
                 >
-                  <Ionicons name="heart" size={24} color={groupMode === 'contribution' ? '#10B981' : '#64748B'} />
+                  <Ionicons name="heart" size={24} color={groupMode === 'contribution' ? '#22D3EE' : '#64748B'} />
                   <Text style={[styles.modeTitle, groupMode === 'contribution' && styles.modeTitleActive]}>Family Mode</Text>
                   <Text style={styles.modeDesc}>Track contributions only, no debt tracking. Good for family.</Text>
                 </TouchableOpacity>
@@ -224,7 +224,7 @@ export default function Groups() {
         {/* Action Buttons */}
         <View style={styles.actionButtons}>
           <TouchableOpacity style={styles.actionButton} onPress={() => setMode('create')}>
-            <Ionicons name="add-circle" size={24} color="#10B981" />
+            <Ionicons name="add-circle" size={24} color="#22D3EE" />
             <Text style={styles.actionButtonText}>Create Group</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.actionButton} onPress={() => setMode('join')}>
@@ -261,7 +261,7 @@ export default function Groups() {
                   <Text style={styles.inviteLabel}>Invite Code</Text>
                   <Text style={styles.inviteCode}>{group.invite_code}</Text>
                 </View>
-                <Ionicons name="share-social" size={20} color="#10B981" />
+                <Ionicons name="share-social" size={20} color="#22D3EE" />
               </TouchableOpacity>
             )}
 
@@ -314,7 +314,7 @@ export default function Groups() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F172A',
+    backgroundColor: '#0B1F2A',
   },
   header: {
     flexDirection: 'row',
@@ -366,7 +366,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   button: {
-    backgroundColor: '#10B981',
+    backgroundColor: '#22D3EE',
     borderRadius: 12,
     height: 56,
     alignItems: 'center',
@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#0F172A',
+    backgroundColor: '#0B1F2A',
     padding: 12,
     borderRadius: 12,
     marginTop: 12,
@@ -447,7 +447,7 @@ const styles = StyleSheet.create({
   inviteCode: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#10B981',
+    color: '#22D3EE',
     letterSpacing: 2,
   },
   membersSection: {
@@ -467,7 +467,7 @@ const styles = StyleSheet.create({
   memberItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#0F172A',
+    backgroundColor: '#0B1F2A',
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 20,
@@ -525,8 +525,8 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   modeOptionActive: {
-    borderColor: '#10B981',
-    backgroundColor: '#10B98115',
+    borderColor: '#22D3EE',
+    backgroundColor: '#22D3EE15',
   },
   modeTitle: {
     fontSize: 16,
@@ -535,7 +535,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   modeTitleActive: {
-    color: '#10B981',
+    color: '#22D3EE',
   },
   modeDesc: {
     fontSize: 13,

@@ -27,16 +27,28 @@ client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
 # Security
-SECRET_KEY = os.environ.get('SECRET_KEY', 'family-finance-secret-key-2024')
+SECRET_KEY = os.environ["SECRET_KEY"]
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_DAYS = 30
 SESSION_TIMEOUT_MINUTES = 30  # Auto-logout after 30 minutes of inactivity
+
+# CORS
+DEFAULT_CORS_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:8081",
+    "http://localhost:19000",
+    "http://localhost:19006",
+]
+
+raw_cors_origins = os.environ.get("CORS_ALLOW_ORIGINS", "")
+cors_origins = [origin.strip() for origin in raw_cors_origins.split(",") if origin.strip()] or DEFAULT_CORS_ORIGINS
+allow_credentials = "*" not in cors_origins
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 security = HTTPBearer()
 
 # Create the main app without a prefix
-app = FastAPI(title="Family Finance App")
+app = FastAPI(title="Family Expense Tracker API")
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
@@ -69,7 +81,7 @@ DEFAULT_CATEGORIES = [
 ]
 
 AVATAR_COLORS = ["#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEAA7", "#DDA0DD", "#98D8C8", "#F7DC6F"]
-GROUP_COLORS = ["#10B981", "#3B82F6", "#F59E0B", "#EF4444", "#8B5CF6", "#EC4899", "#06B6D4", "#84CC16"]
+GROUP_COLORS = ["#22D3EE", "#3B82F6", "#F59E0B", "#EF4444", "#8B5CF6", "#EC4899", "#06B6D4", "#84CC16"]
 
 # ==================== PYDANTIC MODELS ====================
 
@@ -506,7 +518,7 @@ async def get_groups(current_user: dict = Depends(get_current_user)):
             type=group.get("type", "shared"),
             mode=group.get("mode", "split"),
             invite_code=group.get("invite_code"),
-            color=group.get("color", "#10B981"),
+            color=group.get("color", "#22D3EE"),
             members=members,
             created_by=group["created_by"],
             created_at=group["created_at"]
@@ -587,7 +599,7 @@ async def get_group(group_id: str, current_user: dict = Depends(get_current_user
         type=group.get("type", "shared"),
         mode=group.get("mode", "split"),
         invite_code=group.get("invite_code"),
-        color=group.get("color", "#10B981"),
+        color=group.get("color", "#22D3EE"),
         members=members,
         created_by=group["created_by"],
         created_at=group["created_at"]
@@ -626,7 +638,7 @@ async def update_group(group_id: str, group_data: GroupCreate, current_user: dic
         name=updated_group["name"],
         type=updated_group.get("type", "shared"),
         invite_code=updated_group.get("invite_code"),
-        color=updated_group.get("color", "#10B981"),
+        color=updated_group.get("color", "#22D3EE"),
         members=members,
         created_by=updated_group["created_by"],
         created_at=updated_group["created_at"]
@@ -667,7 +679,7 @@ async def join_group(join_data: GroupJoin, current_user: dict = Depends(get_curr
         name=updated_group["name"],
         type=updated_group.get("type", "shared"),
         invite_code=updated_group.get("invite_code"),
-        color=updated_group.get("color", "#10B981"),
+        color=updated_group.get("color", "#22D3EE"),
         members=members,
         created_by=updated_group["created_by"],
         created_at=updated_group["created_at"]
@@ -1838,15 +1850,15 @@ async def get_currencies():
 
 @api_router.get("/")
 async def root():
-    return {"message": "Family Finance API v2.0"}
+    return {"message": "Family Expense Tracker API v2.0"}
 
 # Include the router in the main app
 app.include_router(api_router)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=["*"],
+    allow_credentials=allow_credentials,
+    allow_origins=cors_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )

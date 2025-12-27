@@ -225,7 +225,7 @@ export default function AddExpense() {
           {/* Category Selection */}
           <Text style={styles.sectionTitle}>Select Category</Text>
           {isFetchingCategories ? (
-            <ActivityIndicator color="#10B981" style={styles.categoriesLoader} />
+            <ActivityIndicator color="#22D3EE" style={styles.categoriesLoader} />
           ) : (
             <View style={styles.categoriesGrid}>
               {categories.map((category) => (
@@ -285,7 +285,7 @@ export default function AddExpense() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F172A',
+    backgroundColor: '#0B1F2A',
   },
   keyboardView: {
     flex: 1,
@@ -322,7 +322,7 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   groupChipActive: {
-    backgroundColor: '#10B98120',
+    backgroundColor: '#22D3EE20',
   },
   groupChipDot: {
     width: 8,
@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
   currencySymbol: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: '#10B981',
+    color: '#22D3EE',
     marginRight: 8,
   },
   amountInput: {
@@ -372,8 +372,8 @@ const styles = StyleSheet.create({
     borderColor: '#334155',
   },
   currencyChipActive: {
-    backgroundColor: '#10B981',
-    borderColor: '#10B981',
+    backgroundColor: '#22D3EE',
+    borderColor: '#22D3EE',
   },
   currencyChipText: {
     color: '#94A3B8',
@@ -444,7 +444,7 @@ const styles = StyleSheet.create({
   },
   addButton: {
     flexDirection: 'row',
-    backgroundColor: '#10B981',
+    backgroundColor: '#22D3EE',
     borderRadius: 12,
     height: 56,
     alignItems: 'center',

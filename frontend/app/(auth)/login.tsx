@@ -52,10 +52,10 @@ export default function Login() {
         >
           <View style={styles.header}>
             <View style={styles.logoContainer}>
-              <Ionicons name="wallet" size={60} color="#10B981" />
+              <Ionicons name="wallet" size={60} color="#22D3EE" />
             </View>
-            <Text style={styles.title}>Family Finance</Text>
-            <Text style={styles.subtitle}>Track your household expenses together</Text>
+            <Text style={styles.title}>Family Expense Tracker</Text>
+            <Text style={styles.subtitle}>Shared spending, crystal-clear balances.</Text>
           </View>
 
           <View style={styles.form}>
@@ -118,7 +118,7 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0F172A',
+    backgroundColor: '#0B1F2A',
   },
   keyboardView: {
     flex: 1,
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   button: {
-    backgroundColor: '#10B981',
+    backgroundColor: '#22D3EE',
     borderRadius: 12,
     height: 56,
     alignItems: 'center',
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   footerLink: {
-    color: '#10B981',
+    color: '#22D3EE',
     fontSize: 16,
     fontWeight: '600',
   },
