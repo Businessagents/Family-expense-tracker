@@ -1,2 +1,9 @@
-**/*
-!frontend/**
+/backend
+/tests
+/docs
+/scripts
+/*.py
+/*.md
+/*.patch
+/.github
+/model.patch
