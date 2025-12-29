@@ -7,6 +7,8 @@
     "icon": "./assets/images/icon.png",
     "scheme": "familyexpensetracker",
     "userInterfaceStyle": "automatic",
+    "description": "A collaborative family expense tracking app with secure authentication and real-time expense management",
+    "privacy": "https://raw.githubusercontent.com/Businessagents/Family-expense-tracker/main/docs/privacy-policy.html",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
