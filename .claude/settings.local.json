@@ -7,7 +7,14 @@
       "WebFetch(domain:expo.dev)",
       "Bash(eas build:*)",
       "Bash(git pull:*)",
-      "Bash(eas build:configure:*)"
+      "Bash(eas build:configure:*)",
+      "Bash(npm install:*)",
+      "Bash(gh workflow run:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)",
+      "Bash(npx eas build:view:*)",
+      "Bash(gh run watch:*)",
+      "Bash(npx eas:*)"
     ]
   }
 }
