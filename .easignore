@@ -1,3 +1,5 @@
+# Exclude problematic files and directories
+/.claude
 /backend
 /tests
 /docs
@@ -7,3 +9,9 @@
 /*.patch
 /.github
 /model.patch
+
+# Exclude from frontend
+frontend/.env
+frontend/.gitignore
+frontend/_ul
+frontend/eas.json.backup
