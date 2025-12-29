@@ -1,0 +1,4 @@
+.metro-cache
+node_modules
+.expo
+.git
