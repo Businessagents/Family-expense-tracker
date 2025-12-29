@@ -1,6 +1,7 @@
 {
   "cli": {
-    "version": ">= 3.0.0"
+    "version": ">= 3.0.0",
+    "appVersionSource": "remote"
   },
   "build": {
     "development": {
@@ -17,9 +18,9 @@
       "env": {
         "EXPO_PUBLIC_BACKEND_URL": "https://family-expense-tracker-production.up.railway.app"
       },
+      "autoIncrement": true,
       "android": {
-        "buildType": "app-bundle",
-        "credentialsSource": "remote"
+        "buildType": "app-bundle"
       }
     }
   },
