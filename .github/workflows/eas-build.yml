@@ -1,11 +1,6 @@
 name: EAS Build
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'frontend/**'
   workflow_dispatch:
     inputs:
       platform:
@@ -23,13 +18,12 @@ on:
         default: 'preview'
         type: choice
         options:
-          - development
           - preview
           - production
 
 jobs:
   build:
-    name: Build ${{ github.event.inputs.platform || 'android' }} (${{ github.event.inputs.profile || 'preview' }})
+    name: Build ${{ github.event.inputs.platform }} (${{ github.event.inputs.profile }})
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -43,8 +37,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'yarn'
-          cache-dependency-path: frontend/yarn.lock
 
       - name: Setup Expo
         uses: expo/expo-github-action@v8
@@ -53,45 +45,7 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: npm install --legacy-peer-deps
 
       - name: Build app
-        run: |
-          PLATFORM="${{ github.event.inputs.platform || 'android' }}"
-          PROFILE="${{ github.event.inputs.profile || 'preview' }}"
-
-          if [ "$PLATFORM" = "all" ]; then
-            eas build --platform all --profile $PROFILE --non-interactive
-          else
-            eas build --platform $PLATFORM --profile $PROFILE --non-interactive
-          fi
-
-  submit:
-    name: Submit to Store
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.event.inputs.profile == 'production'
-    defaults:
-      run:
-        working-directory: frontend
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Setup Expo
-        uses: expo/expo-github-action@v8
-        with:
-          eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
-
-      - name: Submit to Play Store
-        if: github.event.inputs.platform == 'android' || github.event.inputs.platform == 'all'
-        run: eas submit --platform android --latest --non-interactive
-        env:
-          GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
+        run: eas build --platform ${{ github.event.inputs.platform }} --profile ${{ github.event.inputs.profile }} --non-interactive
