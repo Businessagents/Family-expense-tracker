@@ -77,23 +77,19 @@ agenthub/agents/youtube/db
 .cache/
 
 # Mobile development
-android-sdk/ -e 
+android-sdk/
+
 # Environment files
 *.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
--e 
-# Environment files
-*.env
-*.env.*
+*.env.local
+*.env.*.local
+!*.env.example
+
+# Play Store credentials (sensitive)
+play-store-key.json
+google-services.json
+
+# Expo/EAS
+.expo/
+*.jks
+*.keystore
