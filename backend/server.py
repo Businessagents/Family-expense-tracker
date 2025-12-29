@@ -1852,6 +1852,11 @@ async def get_currencies():
 async def root():
     return {"message": "Family Expense Tracker API v2.0"}
 
+# Health check endpoint for Railway
+@app.get("/")
+async def health_check():
+    return {"status": "healthy", "message": "Family Expense Tracker API v2.0"}
+
 # Include the router in the main app
 app.include_router(api_router)
 

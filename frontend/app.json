@@ -53,9 +53,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "your-project-id"
+        "projectId": "5910396d-3a36-4ec9-b623-ffb2223395c7"
       }
     },
-    "owner": "your-expo-username"
+    "owner": "businessagents"
   }
 }
